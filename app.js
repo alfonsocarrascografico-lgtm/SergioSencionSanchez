@@ -12,6 +12,7 @@ const backdrop = document.getElementById("backdrop");
 
 const MOBILE_BREAKPOINT = 860;
 const MOBILE_TOPBAR_H = 66;
+const WHATSAPP_NUMBER = "59899703667";
 let currentIndex = 0;
 let wheelLock = false;
 
@@ -263,6 +264,8 @@ const cartItemsEl = document.getElementById("cart-items");
 const cartCountEl = document.getElementById("cart-count");
 const cartTotalEl = document.getElementById("cart-total");
 const checkoutMsgEl = document.getElementById("checkout-msg");
+const customerNameEl = document.getElementById("cart-customer-name");
+const customerLocationEl = document.getElementById("cart-customer-location");
 
 const formatUYU = (n) => `$${n.toLocaleString("es-UY")}`;
 
@@ -390,10 +393,31 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
     checkoutMsgEl.textContent = "Agregá al menos un insumo antes de finalizar.";
     return;
   }
-  const summary = cart
-    .map((i) => `• ${i.qty} x ${i.name} (${i.unit}) — ${formatUYU(i.price * i.qty)}`)
-    .join("\n");
-  checkoutMsgEl.textContent = `Detalle listo para enviar:\n${summary}`;
+
+  const customerName = customerNameEl ? customerNameEl.value.trim() : "";
+  const customerLocation = customerLocationEl ? customerLocationEl.value.trim() : "";
+
+  if (!customerName || !customerLocation) {
+    checkoutMsgEl.textContent = "Completá tu nombre o comercio y la localidad antes de enviar.";
+    return;
+  }
+
+  const total = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const lines = cart.map(
+    (i) => `• ${i.qty} x ${i.name} (${i.unit}) — ${formatUYU(i.price * i.qty)}`
+  );
+  const message = [
+    "Hola, quisiera consultar / coordinar el siguiente pedido:",
+    `Cliente / Comercio: ${customerName}`,
+    `Localidad / envío: ${customerLocation}`,
+    "",
+    ...lines,
+    `Subtotal estimado: ${formatUYU(total)}`
+  ].join("\n");
+
+  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  checkoutMsgEl.textContent = `Abriendo WhatsApp con el detalle:\n${lines.join("\n")}\nSubtotal estimado: ${formatUYU(total)}`;
+  window.open(waUrl, "_blank", "noopener,noreferrer");
 });
 
 document.getElementById("contact-form").addEventListener("submit", (e) => {

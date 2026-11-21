@@ -422,8 +422,22 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
 
 document.getElementById("contact-form").addEventListener("submit", (e) => {
   e.preventDefault();
+  const formData = new FormData(e.target);
+  const empresa = String(formData.get("empresa") || "").trim();
+  const telefono = String(formData.get("telefono") || "").trim();
+  const mensaje = String(formData.get("mensaje") || "").trim();
+
+  const text = [
+    "Hola, quisiera realizar una consulta comercial:",
+    `Nombre o comercio: ${empresa}`,
+    `Teléfono / WhatsApp: ${telefono}`,
+    `Detalle: ${mensaje}`
+  ].join("\n");
+
+  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
   document.getElementById("contact-feedback").textContent =
-    "Consulta preparada. Podés conectarla a tu endpoint PHP o WhatsApp.";
+    "Abriendo WhatsApp con tu consulta...";
+  window.open(waUrl, "_blank", "noopener,noreferrer");
   e.target.reset();
 });
 

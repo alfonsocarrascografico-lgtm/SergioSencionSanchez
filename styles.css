@@ -478,18 +478,12 @@ h2 {
   gap: 12px;
   min-width: 0;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .product-card:hover {
   transform: translateY(-3px);
   border-color: var(--brand-orange);
-  box-shadow: 0 10px 22px rgba(30, 26, 23, 0.08);
-}
-
-.product-card:focus-visible {
-  outline: 2px solid var(--brand-orange);
-  outline-offset: 2px;
 }
 
 .product-thumb-wrap {
@@ -515,13 +509,6 @@ h2 {
   color: #ffffff;
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  opacity: 0.92;
-  transition: background 0.2s ease;
-}
-
-.product-card:hover .product-sheet-hint {
-  background: var(--brand-red);
 }
 
 .product-thumb-placeholder {
@@ -631,7 +618,6 @@ h2 {
   font: inherit;
   font-size: 16px;
   background: var(--bg-ivory);
-  color: var(--ink);
 }
 
 .contact-card input:focus,
@@ -793,10 +779,6 @@ h2 {
   display: block;
 }
 
-.tech-modal-info {
-  min-width: 0;
-}
-
 .tech-modal-info h3 {
   margin: 4px 0 6px;
   font-size: 1.35rem;
@@ -882,16 +864,7 @@ h2 {
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--bg-ivory);
-  color: var(--ink);
-  font-weight: 700;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-}
-
-.icon-close:hover {
-  background: var(--bg-orange-tint);
-  border-color: var(--brand-orange);
-  color: var(--brand-red);
 }
 
 .cart-items {
@@ -943,27 +916,14 @@ h2 {
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg-ivory);
-  color: var(--ink);
   font-weight: 700;
   cursor: pointer;
-}
-
-.qty-box button:hover {
-  border-color: var(--brand-orange);
-  background: var(--bg-orange-tint);
 }
 
 .cart-subtotal {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 12px;
-  font-size: 0.95rem;
-}
-
-.cart-subtotal strong {
-  font-size: 1.08rem;
-  color: var(--brand-red);
 }
 
 .checkout-msg,
@@ -974,7 +934,6 @@ h2 {
   white-space: pre-line;
 }
 
-/* Campos de cliente / contacto dentro del carrito (estética unificada con el sitio) */
 .cart-buyer-fields {
   display: grid;
   gap: 10px;
@@ -983,10 +942,9 @@ h2 {
 
 .cart-field {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--ink);
 }
 
 .cart-field input {
@@ -995,22 +953,7 @@ h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   font: inherit;
-  font-size: 0.92rem;
-  font-weight: 500;
-  background: var(--surface);
-  color: var(--ink);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.cart-field input::placeholder {
-  color: var(--muted);
-  opacity: 0.8;
-}
-
-.cart-field input:focus {
-  outline: 2px solid var(--brand-orange);
-  outline-offset: 0;
-  border-color: var(--brand-orange);
+  font-size: 16px;
   background: var(--surface);
 }
 
@@ -1024,3 +967,182 @@ h2 {
 .cart-intent-option {
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cart-intent-option input {
+  margin: 0;
+  accent-color: var(--brand-orange);
+  cursor: pointer;
+}
+
+/* Tablet y laptop compacta (<= 1024px) */
+@media (max-width: 1024px) {
+  .store-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .panel {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* Versión mobile (<= 860px) */
+@media (max-width: 860px) {
+  :root {
+    --topbar-h: 66px;
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .brand-logo {
+    height: 48px;
+    max-width: 155px;
+  }
+
+  .main-nav,
+  .stage-controls {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .stage {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    padding-top: var(--topbar-h);
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .panel,
+  .panel-hero,
+  .panel-contact {
+    width: 100%;
+    min-height: auto;
+    height: auto;
+    padding: 28px 16px 44px;
+    background: var(--bg-ivory);
+    border-bottom: 1px solid var(--border);
+    overflow-y: visible;
+  }
+
+  .panel-hero {
+    background: linear-gradient(
+      180deg,
+      var(--bg-ivory) 0%,
+      var(--bg-ivory) 58%,
+      var(--brand-orange) 58%,
+      var(--brand-orange) 100%
+    );
+  }
+
+  .panel-logistics {
+    background: var(--brand-orange);
+  }
+
+  .panel-recipes {
+    background: var(--bg-warm);
+  }
+
+  .split-layout,
+  .cards-3 {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .split-layout {
+    min-height: auto;
+  }
+
+  .hero-media-box {
+    max-height: none;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
+
+  .filter-bar {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tech-modal-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .tech-modal-media {
+    max-width: 240px;
+    max-height: 150px;
+    margin: 0 auto;
+  }
+
+  .tech-spec-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .reveal {
+    transform: translateY(18px);
+  }
+
+  .panel.is-visible .reveal {
+    transform: translateY(0);
+  }
+}
+
+/* Celulares chicos (<= 480px) */
+@media (max-width: 480px) {
+  .brand-logo {
+    height: 44px;
+    max-width: 140px;
+  }
+
+  .cart-label {
+    display: none;
+  }
+
+  .info-stack,
+  .store-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-drawer {
+    width: 100%;
+  }
+}

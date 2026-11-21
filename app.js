@@ -253,6 +253,38 @@ const PRODUCTS = [
     price: 1190,
     image: "easymulticereal.webp"
   }
+   {
+    id: 9,
+    name: "Harina de Almendras",
+    unit: "Bolsa 1 kg",
+    category: "harinas",
+    price: 630,
+    image: "harinadealmendras.webp"
+  },
+  {
+    id: 10,
+    name: "Almendras fileteadas",
+    unit: "Bolsa 1 kg",
+    category: "reposteria",
+    price: 850,
+    image: "almendrasfileteadas.webp"
+  },
+  {
+    id: 11,
+    name: "Patis´omalt",
+    unit: "Balde 4 kg",
+    category: "reposteria",
+    price: 960,
+    image: "patisomalt.webp"
+  },
+  {
+    id: 12,
+    name: "Praliné de Avellanas",
+    unit: "Balde 5 kg",
+    category: "reposteria",
+    price: 1190,
+    image: "pralinedeavellanas.webp"
+  }
 ];
 
 const CART_KEY = "sss_horizontal_cart_v3";

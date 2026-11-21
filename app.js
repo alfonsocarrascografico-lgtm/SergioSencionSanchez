@@ -212,7 +212,7 @@ const PRODUCTS = [
     unit: "Bolsa 10 kg",
     category: "harinas",
     price: 1380,
-    image: "easypizza"
+    image: "easypizza.webp"
   },
   {
     id: 6,
@@ -220,7 +220,7 @@ const PRODUCTS = [
     unit: "Bolsa 5 kg",
     category: "especiales",
     price: 980,
-    image: "easysalvado"
+    image: "easysalvado.webp"
   },
   {
     id: 7,
@@ -228,7 +228,7 @@ const PRODUCTS = [
     unit: "Bolsa 10 kg",
     category: "especiales",
     price: 1420,
-    image: "easypanblanco"
+    image: "easypanblanco.webp"
   },
   {
     id: 8,
@@ -236,7 +236,7 @@ const PRODUCTS = [
     unit: "Bolsa 5 kg",
     category: "especiales",
     price: 1190,
-    image: "easymulticereal"
+    image: "easymulticereal.webp"
   }
 ];
 

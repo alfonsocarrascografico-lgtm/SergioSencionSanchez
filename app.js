@@ -253,38 +253,6 @@ const PRODUCTS = [
     price: 1190,
     image: "easymulticereal.webp"
   }
-   {
-    id: 9,
-    name: "Harina de Almendras",
-    unit: "Bolsa 1 kg",
-    category: "harinas",
-    price: 630,
-    image: "harinadealmendras.webp"
-  },
-  {
-    id: 10,
-    name: "Almendras fileteadas",
-    unit: "Bolsa 1 kg",
-    category: "reposteria",
-    price: 850,
-    image: "almendrasfileteadas.webp"
-  },
-  {
-    id: 11,
-    name: "Patis´omalt",
-    unit: "Balde 4 kg",
-    category: "reposteria",
-    price: 960,
-    image: "patisomalt.webp"
-  },
-  {
-    id: 12,
-    name: "Praliné de Avellanas",
-    unit: "Balde 5 kg",
-    category: "reposteria",
-    price: 1190,
-    image: "pralinedeavellanas.webp"
-  }
 ];
 
 const CART_KEY = "sss_horizontal_cart_v3";
@@ -454,22 +422,8 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
 
 document.getElementById("contact-form").addEventListener("submit", (e) => {
   e.preventDefault();
-  const formData = new FormData(e.target);
-  const empresa = String(formData.get("empresa") || "").trim();
-  const telefono = String(formData.get("telefono") || "").trim();
-  const mensaje = String(formData.get("mensaje") || "").trim();
-
-  const text = [
-    "Hola, quisiera realizar una consulta comercial:",
-    `Nombre o comercio: ${empresa}`,
-    `Teléfono / WhatsApp: ${telefono}`,
-    `Detalle: ${mensaje}`
-  ].join("\n");
-
-  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
   document.getElementById("contact-feedback").textContent =
-    "Abriendo WhatsApp con tu consulta...";
-  window.open(waUrl, "_blank", "noopener,noreferrer");
+    "Consulta preparada. Podés conectarla a tu endpoint PHP o WhatsApp.";
   e.target.reset();
 });
 

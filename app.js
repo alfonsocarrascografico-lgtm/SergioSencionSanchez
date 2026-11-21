@@ -18,13 +18,19 @@ let wheelLock = false;
 
 const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;
 
+function ensurePanelsVisible() {
+  panels.forEach((panel) => panel.classList.add("is-visible"));
+}
+
 function closeMobileMenu() {
+  if (!mobileDrawer || !mobileMenuBtn) return;
   mobileDrawer.classList.remove("open");
   mobileDrawer.setAttribute("aria-hidden", "true");
   mobileMenuBtn.setAttribute("aria-expanded", "false");
 }
 
 function toggleMobileMenu() {
+  if (!mobileDrawer || !mobileMenuBtn) return;
   const willOpen = !mobileDrawer.classList.contains("open");
   mobileDrawer.classList.toggle("open", willOpen);
   mobileDrawer.setAttribute("aria-hidden", String(!willOpen));
@@ -32,6 +38,7 @@ function toggleMobileMenu() {
 }
 
 function openCart() {
+  if (!cartDrawer || !backdrop) return;
   closeMobileMenu();
   cartDrawer.classList.add("open");
   cartDrawer.setAttribute("aria-hidden", "false");
@@ -39,33 +46,43 @@ function openCart() {
 }
 
 function closeCart() {
+  if (!cartDrawer || !backdrop) return;
   cartDrawer.classList.remove("open");
   cartDrawer.setAttribute("aria-hidden", "true");
   backdrop.hidden = true;
 }
 
 function updateUIState(index) {
-  currentIndex = index;
-  navLinks.forEach((link, idx) => link.classList.toggle("active", idx === index));
-  mobileLinks.forEach((link, idx) => link.classList.toggle("active", idx === index));
-  panelIndicator.textContent = `${String(index + 1).padStart(2, "0")} / ${String(panels.length).padStart(2, "0")}`;
+  if (!panels.length) return;
+  const clamped = Math.max(0, Math.min(panels.length - 1, index));
+  currentIndex = clamped;
 
-  if (!isMobile()) {
-    const pct = (index / (panels.length - 1)) * 100;
+  navLinks.forEach((link, idx) => link.classList.toggle("active", idx === clamped));
+  mobileLinks.forEach((link, idx) => link.classList.toggle("active", idx === clamped));
+
+  if (panelIndicator) {
+    panelIndicator.textContent = `${String(clamped + 1).padStart(2, "0")} / ${String(panels.length).padStart(2, "0")}`;
+  }
+
+  if (progressFill && !isMobile()) {
+    const denominator = Math.max(1, panels.length - 1);
+    const pct = (clamped / denominator) * 100;
     progressFill.style.width = `${pct}%`;
   }
 }
 
 function goToPanel(index) {
+  if (!panels.length) return;
   const clamped = Math.max(0, Math.min(panels.length - 1, index));
   closeMobileMenu();
+  ensurePanelsVisible();
 
-  if (!isMobile()) {
+  if (!isMobile() && stage) {
     stage.scrollTo({
       left: clamped * window.innerWidth,
       behavior: "smooth"
     });
-  } else {
+  } else if (panels[clamped]) {
     const topOffset = panels[clamped].offsetTop - MOBILE_TOPBAR_H;
     window.scrollTo({
       top: Math.max(0, topOffset),
@@ -75,55 +92,59 @@ function goToPanel(index) {
   updateUIState(clamped);
 }
 
-stage.addEventListener(
-  "wheel",
-  (e) => {
-    if (isMobile()) return;
-    if (cartDrawer.classList.contains("open")) return;
-    if (Math.abs(e.deltaY) < 10 && Math.abs(e.deltaX) < 10) return;
+if (stage) {
+  stage.addEventListener(
+    "wheel",
+    (e) => {
+      if (isMobile()) return;
+      if (cartDrawer && cartDrawer.classList.contains("open")) return;
+      if (Math.abs(e.deltaY) < 10 && Math.abs(e.deltaX) < 10) return;
 
-    const currentPanel = panels[currentIndex];
-    const hasVerticalOverflow = currentPanel && currentPanel.scrollHeight > currentPanel.clientHeight + 4;
+      const currentPanel = panels[currentIndex];
+      const hasVerticalOverflow =
+        currentPanel && currentPanel.scrollHeight > currentPanel.clientHeight + 4;
 
-    if (hasVerticalOverflow && Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
-      const atTop = currentPanel.scrollTop <= 2;
-      const atBottom =
-        currentPanel.scrollTop + currentPanel.clientHeight >= currentPanel.scrollHeight - 2;
+      if (hasVerticalOverflow && Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
+        const atTop = currentPanel.scrollTop <= 2;
+        const atBottom =
+          currentPanel.scrollTop + currentPanel.clientHeight >= currentPanel.scrollHeight - 2;
 
-      if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) {
-        return;
+        if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) {
+          return;
+        }
       }
+
+      e.preventDefault();
+      if (wheelLock) return;
+
+      const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      wheelLock = true;
+      goToPanel(currentIndex + (delta > 0 ? 1 : -1));
+      setTimeout(() => {
+        wheelLock = false;
+      }, 480);
+    },
+    { passive: false }
+  );
+
+  stage.addEventListener("scroll", () => {
+    if (isMobile()) return;
+    const maxScroll = stage.scrollWidth - stage.clientWidth;
+    if (progressFill && maxScroll > 0) {
+      progressFill.style.width = `${(stage.scrollLeft / maxScroll) * 100}%`;
     }
-
-    e.preventDefault();
-    if (wheelLock) return;
-
-    const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-    wheelLock = true;
-    goToPanel(currentIndex + (delta > 0 ? 1 : -1));
-    setTimeout(() => {
-      wheelLock = false;
-    }, 480);
-  },
-  { passive: false }
-);
-
-stage.addEventListener("scroll", () => {
-  if (isMobile()) return;
-  const maxScroll = stage.scrollWidth - stage.clientWidth;
-  if (maxScroll > 0) {
-    progressFill.style.width = `${(stage.scrollLeft / maxScroll) * 100}%`;
-  }
-  const idx = Math.round(stage.scrollLeft / window.innerWidth);
-  if (idx !== currentIndex) {
-    updateUIState(idx);
-  }
-});
+    const width = Math.max(1, window.innerWidth);
+    const idx = Math.round(stage.scrollLeft / width);
+    if (idx !== currentIndex) {
+      updateUIState(idx);
+    }
+  });
+}
 
 window.addEventListener("scroll", () => {
   if (!isMobile()) return;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  if (docHeight > 0) {
+  if (progressFill && docHeight > 0) {
     progressFill.style.width = `${(window.scrollY / docHeight) * 100}%`;
   }
 });
@@ -151,9 +172,14 @@ document.querySelectorAll("[data-nav]").forEach((trigger) => {
   });
 });
 
-mobileMenuBtn.addEventListener("click", toggleMobileMenu);
-document.getElementById("prev-panel").addEventListener("click", () => goToPanel(currentIndex - 1));
-document.getElementById("next-panel").addEventListener("click", () => goToPanel(currentIndex + 1));
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+}
+
+const prevPanelBtn = document.getElementById("prev-panel");
+const nextPanelBtn = document.getElementById("next-panel");
+if (prevPanelBtn) prevPanelBtn.addEventListener("click", () => goToPanel(currentIndex - 1));
+if (nextPanelBtn) nextPanelBtn.addEventListener("click", () => goToPanel(currentIndex + 1));
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
@@ -161,7 +187,9 @@ window.addEventListener("keydown", (e) => {
     closeMobileMenu();
   }
   if (isMobile()) return;
-  if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+  if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    return;
+  }
 
   if (e.key === "ArrowDown" || e.key === "ArrowUp") {
     const activePanel = panels[currentIndex];
@@ -181,13 +209,16 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("resize", () => {
+  ensurePanelsVisible();
   if (!isMobile()) {
     closeMobileMenu();
-    stage.scrollLeft = currentIndex * window.innerWidth;
+    if (stage) {
+      stage.scrollLeft = currentIndex * window.innerWidth;
+    }
   }
 });
 
-/* --- CATÁLOGO DE PRODUCTOS (4 NUEVOS ARRIBA + 4 ANTERIORES DEBAJO) --- */
+/* --- CATÁLOGO DE PRODUCTOS (ESCALABLE PARA CRECIMIENTO VERTICAL) --- */
 const PRODUCTS = [
   {
     id: 1,
@@ -252,11 +283,58 @@ const PRODUCTS = [
     category: "especiales",
     price: 1190,
     image: "easymulticereal.webp"
+  },
+  {
+    id: 9,
+    name: "Harina de Almendras",
+    unit: "Bolsa 1 kg",
+    category: "harinas",
+    price: 1490,
+    image: "harinadealmendras.webp"
+  },
+  {
+    id: 10,
+    name: "Patis´omalt",
+    unit: "Balde 4 kg",
+    category: "reposteria",
+    price: 1220,
+    image: "patisomalt.webp"
+  },
+  {
+    id: 11,
+    name: "praline de avellanas",
+    unit: "Balde 5 kg",
+    category: "reposteria",
+    price: 1540,
+    image: "pralinedeavellanas.webp"
+  },
+  {
+    id: 12,
+    name: "Almendras fileteadas",
+    unit: "Bolsa 1 kg",
+    category: "reposteria",
+    price: 610,
+    image: "almendrasfileteadas.webp"
   }
 ];
 
 const CART_KEY = "sss_horizontal_cart_v3";
-let cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+let cart = [];
+try {
+  const parsed = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+  if (Array.isArray(parsed)) {
+    cart = parsed.filter(
+      (item) =>
+        item &&
+        typeof item.id === "number" &&
+        typeof item.name === "string" &&
+        Number(item.price) > 0 &&
+        Number(item.qty) > 0
+    );
+  }
+} catch (_err) {
+  cart = [];
+}
 let activeCategory = "todos";
 
 const productGrid = document.getElementById("product-grid");
@@ -267,16 +345,17 @@ const checkoutMsgEl = document.getElementById("checkout-msg");
 const customerNameEl = document.getElementById("cart-customer-name");
 const customerLocationEl = document.getElementById("cart-customer-location");
 
-const formatUYU = (n) => `$${n.toLocaleString("es-UY")}`;
+const formatUYU = (n) => `$${Number(n || 0).toLocaleString("es-UY")}`;
 
 function renderMediaBlock(product) {
   if (product.image) {
-    return `<img src="${product.image}" alt="${product.name}" class="product-thumb" />`;
+    return `<img src="${product.image}" alt="${product.name}" class="product-thumb" loading="lazy" />`;
   }
   return `<div class="product-thumb-placeholder">Insumo · ${product.category}</div>`;
 }
 
 function renderProducts() {
+  if (!productGrid) return;
   const list =
     activeCategory === "todos"
       ? PRODUCTS
@@ -311,12 +390,19 @@ function renderProducts() {
 }
 
 function saveAndRenderCart() {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  const qty = cart.reduce((acc, item) => acc + item.qty, 0);
-  const total = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  } catch (_err) {
+    // Continuar aunque el almacenamiento local no esté disponible
+  }
 
-  cartCountEl.textContent = qty;
-  cartTotalEl.textContent = formatUYU(total);
+  const qty = cart.reduce((acc, item) => acc + Number(item.qty || 0), 0);
+  const total = cart.reduce((acc, item) => acc + Number(item.price || 0) * Number(item.qty || 0), 0);
+
+  if (cartCountEl) cartCountEl.textContent = qty;
+  if (cartTotalEl) cartTotalEl.textContent = formatUYU(total);
+
+  if (!cartItemsEl) return;
 
   if (!cart.length) {
     cartItemsEl.innerHTML = "<p>Tu carrito está vacío.</p>";
@@ -358,75 +444,119 @@ document.querySelectorAll(".filter-pill").forEach((pill) => {
   });
 });
 
-productGrid.addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-add]");
-  if (!btn) return;
-  const id = Number(btn.dataset.add);
-  const product = PRODUCTS.find((p) => p.id === id);
-  const found = cart.find((item) => item.id === id);
-  if (found) found.qty += 1;
-  else cart.push({ ...product, qty: 1 });
-  saveAndRenderCart();
-});
+if (productGrid) {
+  productGrid.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add]");
+    if (!btn) return;
+    const id = Number(btn.dataset.add);
+    const product = PRODUCTS.find((p) => p.id === id);
+    if (!product) return;
+    const found = cart.find((item) => item.id === id);
+    if (found) found.qty += 1;
+    else cart.push({ ...product, qty: 1 });
+    saveAndRenderCart();
+  });
+}
 
-cartItemsEl.addEventListener("click", (e) => {
-  const inc = e.target.closest("[data-inc]");
-  const dec = e.target.closest("[data-dec]");
-  if (inc) {
-    const item = cart.find((i) => i.id === Number(inc.dataset.inc));
-    if (item) item.qty += 1;
-  }
-  if (dec) {
-    cart = cart
-      .map((i) => (i.id === Number(dec.dataset.dec) ? { ...i, qty: i.qty - 1 } : i))
-      .filter((i) => i.qty > 0);
-  }
-  saveAndRenderCart();
-});
+if (cartItemsEl) {
+  cartItemsEl.addEventListener("click", (e) => {
+    const inc = e.target.closest("[data-inc]");
+    const dec = e.target.closest("[data-dec]");
+    if (inc) {
+      const item = cart.find((i) => i.id === Number(inc.dataset.inc));
+      if (item) item.qty += 1;
+    }
+    if (dec) {
+      cart = cart
+        .map((i) => (i.id === Number(dec.dataset.dec) ? { ...i, qty: i.qty - 1 } : i))
+        .filter((i) => i.qty > 0);
+    }
+    saveAndRenderCart();
+  });
+}
 
-document.getElementById("open-cart-btn").addEventListener("click", openCart);
-document.getElementById("close-cart-btn").addEventListener("click", closeCart);
-backdrop.addEventListener("click", closeCart);
+const openCartBtn = document.getElementById("open-cart-btn");
+const closeCartBtn = document.getElementById("close-cart-btn");
+if (openCartBtn) openCartBtn.addEventListener("click", openCart);
+if (closeCartBtn) closeCartBtn.addEventListener("click", closeCart);
+if (backdrop) backdrop.addEventListener("click", closeCart);
 
-document.getElementById("checkout-btn").addEventListener("click", () => {
-  if (!cart.length) {
-    checkoutMsgEl.textContent = "Agregá al menos un insumo antes de finalizar.";
-    return;
-  }
+const checkoutBtn = document.getElementById("checkout-btn");
+if (checkoutBtn) {
+  checkoutBtn.addEventListener("click", () => {
+    if (!cart.length) {
+      if (checkoutMsgEl) {
+        checkoutMsgEl.textContent = "Agregá al menos un insumo antes de finalizar.";
+      }
+      return;
+    }
 
-  const customerName = customerNameEl ? customerNameEl.value.trim() : "";
-  const customerLocation = customerLocationEl ? customerLocationEl.value.trim() : "";
+    const customerName = customerNameEl ? customerNameEl.value.trim() : "";
+    const customerLocation = customerLocationEl ? customerLocationEl.value.trim() : "";
 
-  if (!customerName || !customerLocation) {
-    checkoutMsgEl.textContent = "Completá tu nombre o comercio y la localidad antes de enviar.";
-    return;
-  }
+    if (!customerName || !customerLocation) {
+      if (checkoutMsgEl) {
+        checkoutMsgEl.textContent = "Completá tu nombre o comercio y la localidad antes de enviar.";
+      }
+      return;
+    }
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
-  const lines = cart.map(
-    (i) => `• ${i.qty} x ${i.name} (${i.unit}) — ${formatUYU(i.price * i.qty)}`
-  );
-  const message = [
-    "Hola, quisiera consultar / coordinar el siguiente pedido:",
-    `Cliente / Comercio: ${customerName}`,
-    `Localidad / envío: ${customerLocation}`,
-    "",
-    ...lines,
-    `Subtotal estimado: ${formatUYU(total)}`
-  ].join("\n");
+    const selectedIntentEl = document.querySelector('input[name="cart-intent"]:checked');
+    const intent = selectedIntentEl ? selectedIntentEl.value : "Pedido";
+    const introLine =
+      intent === "Consulta"
+        ? "Hola, quisiera realizar una CONSULTA sobre los siguientes insumos:"
+        : "Hola, quisiera coordinar el siguiente PEDIDO:";
 
-  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  checkoutMsgEl.textContent = `Abriendo WhatsApp con el detalle:\n${lines.join("\n")}\nSubtotal estimado: ${formatUYU(total)}`;
-  window.open(waUrl, "_blank", "noopener,noreferrer");
-});
+    const total = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const lines = cart.map(
+      (i) => `• ${i.qty} x ${i.name} (${i.unit}) — ${formatUYU(i.price * i.qty)}`
+    );
+    const message = [
+      introLine,
+      `Tipo: ${intent}`,
+      `Cliente / Comercio: ${customerName}`,
+      `Localidad / envío: ${customerLocation}`,
+      "",
+      ...lines,
+      `Subtotal estimado: ${formatUYU(total)}`
+    ].join("\n");
 
-document.getElementById("contact-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  document.getElementById("contact-feedback").textContent =
-    "Consulta preparada. Podés conectarla a tu endpoint PHP o WhatsApp.";
-  e.target.reset();
-});
+    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    if (checkoutMsgEl) {
+      checkoutMsgEl.textContent = `Abriendo WhatsApp con el detalle:\n${lines.join("\n")}\nSubtotal estimado: ${formatUYU(total)}`;
+    }
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  });
+}
 
+const contactForm = document.getElementById("contact-form");
+if (contactForm) {
+  contactForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const empresa = String(formData.get("empresa") || "").trim();
+    const telefono = String(formData.get("telefono") || "").trim();
+    const mensaje = String(formData.get("mensaje") || "").trim();
+
+    const text = [
+      "Hola, quisiera realizar una consulta comercial:",
+      `Nombre o comercio: ${empresa}`,
+      `Teléfono / WhatsApp: ${telefono}`,
+      `Detalle: ${mensaje}`
+    ].join("\n");
+
+    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    const feedbackEl = document.getElementById("contact-feedback");
+    if (feedbackEl) {
+      feedbackEl.textContent = "Abriendo WhatsApp con tu consulta...";
+    }
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+    e.target.reset();
+  });
+}
+
+ensurePanelsVisible();
 renderProducts();
 saveAndRenderCart();
 updateUIState(0);

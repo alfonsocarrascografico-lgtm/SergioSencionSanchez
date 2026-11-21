@@ -208,35 +208,35 @@ const PRODUCTS = [
   },
   {
     id: 5,
-    name: "Premezcla Pan Artesanal",
-    unit: "Bolsa 25 kg",
+    name: "Easy Prepizza",
+    unit: "Bolsa 10 kg",
     category: "harinas",
-    price: 2450,
-    image: ""
+    price: 1380,
+    image: "easypizza"
   },
   {
     id: 6,
-    name: "Harina Repostería Refinada",
-    unit: "Bolsa 10 kg",
-    category: "reposteria",
+    name: "Easy Salvado",
+    unit: "Bolsa 5 kg",
+    category: "especiales",
     price: 980,
-    image: ""
+    image: "easysalvado"
   },
   {
     id: 7,
-    name: "Base Panificación Sin Gluten",
-    unit: "Bolsa 5 kg",
+    name: "Easy Pan Blanco tipo Artesanal",
+    unit: "Bolsa 10 kg",
     category: "especiales",
     price: 1420,
-    image: ""
+    image: "easypanblanco"
   },
   {
     id: 8,
-    name: "Mezcla Bizcochos Baja en Azúcar",
+    name: "Easy Multicereal Plus",
     unit: "Bolsa 5 kg",
     category: "especiales",
     price: 1190,
-    image: ""
+    image: "easymulticereal"
   }
 ];
 

@@ -161,6 +161,20 @@ window.addEventListener("keydown", (e) => {
   }
   if (isMobile()) return;
   if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    const activePanel = panels[currentIndex];
+    if (activePanel && activePanel.scrollHeight > activePanel.clientHeight + 4) {
+      e.preventDefault();
+      const step = 140;
+      activePanel.scrollBy({
+        top: e.key === "ArrowDown" ? step : -step,
+        behavior: "smooth"
+      });
+    }
+    return;
+  }
+
   if (e.key === "ArrowRight") goToPanel(currentIndex + 1);
   if (e.key === "ArrowLeft") goToPanel(currentIndex - 1);
 });

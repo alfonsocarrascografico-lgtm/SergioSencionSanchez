@@ -63,9 +63,9 @@ body {
 
 .brand-logo {
   display: block;
-  height: 58px;
+  height: 64px; /* antes 58px */
   width: auto;
-  max-width: 185px;
+  max-width: 220px; /* antes 185px */
   object-fit: contain;
   mix-blend-mode: multiply;
 }

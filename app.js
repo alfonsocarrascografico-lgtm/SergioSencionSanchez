@@ -8,6 +8,7 @@ const panelIndicator = document.getElementById("panel-indicator");
 const mobileMenuBtn = document.getElementById("mobile-menu-btn");
 const mobileDrawer = document.getElementById("mobile-drawer");
 const cartDrawer = document.getElementById("cart-drawer");
+const techModal = document.getElementById("tech-modal");
 const backdrop = document.getElementById("backdrop");
 
 const MOBILE_BREAKPOINT = 860;
@@ -15,11 +16,19 @@ const MOBILE_TOPBAR_H = 66;
 const WHATSAPP_NUMBER = "59899703667";
 let currentIndex = 0;
 let wheelLock = false;
+let activeTechProductId = null;
 
 const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;
 
 function ensurePanelsVisible() {
   panels.forEach((panel) => panel.classList.add("is-visible"));
+}
+
+function syncBackdrop() {
+  if (!backdrop) return;
+  const isCartOpen = Boolean(cartDrawer && cartDrawer.classList.contains("open"));
+  const isTechOpen = Boolean(techModal && !techModal.hidden);
+  backdrop.hidden = !(isCartOpen || isTechOpen);
 }
 
 function closeMobileMenu() {
@@ -37,19 +46,34 @@ function toggleMobileMenu() {
   mobileMenuBtn.setAttribute("aria-expanded", String(willOpen));
 }
 
+function closeTechSheet() {
+  if (!techModal) return;
+  techModal.hidden = true;
+  techModal.setAttribute("aria-hidden", "true");
+  activeTechProductId = null;
+  syncBackdrop();
+}
+
 function openCart() {
-  if (!cartDrawer || !backdrop) return;
+  if (!cartDrawer) return;
   closeMobileMenu();
+  closeTechSheet();
   cartDrawer.classList.add("open");
   cartDrawer.setAttribute("aria-hidden", "false");
-  backdrop.hidden = false;
+  syncBackdrop();
 }
 
 function closeCart() {
-  if (!cartDrawer || !backdrop) return;
+  if (!cartDrawer) return;
   cartDrawer.classList.remove("open");
   cartDrawer.setAttribute("aria-hidden", "true");
-  backdrop.hidden = true;
+  syncBackdrop();
+}
+
+function closeAllOverlays() {
+  closeCart();
+  closeTechSheet();
+  closeMobileMenu();
 }
 
 function updateUIState(index) {
@@ -98,6 +122,7 @@ if (stage) {
     (e) => {
       if (isMobile()) return;
       if (cartDrawer && cartDrawer.classList.contains("open")) return;
+      if (techModal && !techModal.hidden) return;
       if (Math.abs(e.deltaY) < 10 && Math.abs(e.deltaX) < 10) return;
 
       const currentPanel = panels[currentIndex];
@@ -183,9 +208,10 @@ if (nextPanelBtn) nextPanelBtn.addEventListener("click", () => goToPanel(current
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    closeCart();
-    closeMobileMenu();
+    closeAllOverlays();
+    return;
   }
+  if (techModal && !techModal.hidden) return;
   if (isMobile()) return;
   if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
     return;
@@ -218,7 +244,13 @@ window.addEventListener("resize", () => {
   }
 });
 
-/* --- CATÁLOGO DE PRODUCTOS (ESCALABLE PARA CRECIMIENTO VERTICAL) --- */
+/* --- CATÁLOGO DE PRODUCTOS CON FICHAS TÉCNICAS --- */
+const CATEGORY_LABELS = {
+  harinas: "Harinas y Premezclas",
+  especiales: "Dietas Especiales",
+  reposteria: "Repostería"
+};
+
 const PRODUCTS = [
   {
     id: 1,
@@ -226,7 +258,14 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Pastera A",
     category: "harinas",
     price: 1250,
-    image: "harinaamarillaparatiendaweb.jpg"
+    image: "harinaamarillaparatiendaweb.jpg",
+    techSheet: {
+      tipo: "Harina de trigo Pastera A",
+      presentacion: "Bolsa de 25 kg",
+      aplicaciones: "Pastas frescas, fideos, tallarines, ravioles y masas laminadas.",
+      rendimiento: "Alta elasticidad y firmeza al laminado sin quiebre.",
+      conservacion: "Ambiente fresco, seco y ventilado, sobre tarima."
+    }
   },
   {
     id: 2,
@@ -234,7 +273,14 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Panadera C",
     category: "harinas",
     price: 1180,
-    image: "IMG_20260418_110003-eZDuHPR7S_vpUngCIHLtUA.jpg"
+    image: "IMG_20260418_110003-eZDuHPR7S_vpUngCIHLtUA.jpg",
+    techSheet: {
+      tipo: "Harina de trigo Panadera C adicionada",
+      presentacion: "Bolsa de 25 kg",
+      aplicaciones: "Pan francés, flautas, porteños, galleta de campaña y panificación diaria.",
+      rendimiento: "Buena absorción de agua y volumen estable en horneado.",
+      conservacion: "Lugar fresco y seco, protegido de humedad y luz directa."
+    }
   },
   {
     id: 3,
@@ -242,7 +288,14 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Panadera C",
     category: "harinas",
     price: 1190,
-    image: "IMG_20260418_110515-WoUc_N1egkx198m2ki3LVQ.jpg"
+    image: "IMG_20260418_110515-WoUc_N1egkx198m2ki3LVQ.jpg",
+    techSheet: {
+      tipo: "Harina de trigo Panadera C · Línea Verde",
+      presentacion: "Bolsa de 25 kg",
+      aplicaciones: "Panificados de fermentación controlada, bizcochos y masas sobadas.",
+      rendimiento: "Miga pareja y corteza dorada uniforme.",
+      conservacion: "Lugar fresco, seco y ventilado."
+    }
   },
   {
     id: 4,
@@ -250,7 +303,14 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Panadera B",
     category: "harinas",
     price: 1290,
-    image: "IMG_20260418_112549_1-Zy2K2zDtGtg8hqCtUgWlAw.jpg"
+    image: "IMG_20260418_112549_1-Zy2K2zDtGtg8hqCtUgWlAw.jpg",
+    techSheet: {
+      tipo: "Harina de trigo Panadera B de fuerza superior",
+      presentacion: "Bolsa de 25 kg",
+      aplicaciones: "Panes de molde, viena, hamburguesa, masas enriquecidas y fermentaciones largas.",
+      rendimiento: "Mayor tolerancia al amasado y excelente retención de gas.",
+      conservacion: "Lugar fresco, seco y alejado de olores fuertes."
+    }
   },
   {
     id: 5,
@@ -258,7 +318,14 @@ const PRODUCTS = [
     unit: "Bolsa 10 kg",
     category: "harinas",
     price: 1380,
-    image: "easypizza.webp"
+    image: "easypizza.webp",
+    techSheet: {
+      tipo: "Premezcla completa para prepizzas y focaccias",
+      presentacion: "Bolsa de 10 kg",
+      aplicaciones: "Prepizzas al molde, a la piedra, pizzetas y focaccias.",
+      rendimiento: "Estandariza tiempos de fermentación y evita errores de dosificación.",
+      conservacion: "Conservar bien cerrada en lugar fresco y seco."
+    }
   },
   {
     id: 6,
@@ -266,7 +333,14 @@ const PRODUCTS = [
     unit: "Bolsa 5 kg",
     category: "especiales",
     price: 980,
-    image: "easysalvado.webp"
+    image: "easysalvado.webp",
+    techSheet: {
+      tipo: "Premezcla para panificados con salvado",
+      presentacion: "Bolsa de 5 kg",
+      aplicaciones: "Panes integrales, figazas con fibra, tostadas y sándwiches.",
+      rendimiento: "Aporte equilibrado de fibra con miga húmeda y tierna.",
+      conservacion: "Lugar fresco y seco, lejos de fuentes de calor."
+    }
   },
   {
     id: 7,
@@ -274,7 +348,14 @@ const PRODUCTS = [
     unit: "Bolsa 10 kg",
     category: "especiales",
     price: 1420,
-    image: "easypanblanco.webp"
+    image: "easypanblanco.webp",
+    techSheet: {
+      tipo: "Premezcla para pan blanco rústico / artesanal",
+      presentacion: "Bolsa de 10 kg",
+      aplicaciones: "Hogazas rústicas, baguettes, ciabattas y panes de corteza crocante.",
+      rendimiento: "Alveolado abierto, aroma tradicional y buena conservación.",
+      conservacion: "Lugar fresco, seco y ventilado."
+    }
   },
   {
     id: 8,
@@ -282,7 +363,14 @@ const PRODUCTS = [
     unit: "Bolsa 5 kg",
     category: "especiales",
     price: 1190,
-    image: "easymulticereal.webp"
+    image: "easymulticereal.webp",
+    techSheet: {
+      tipo: "Premezcla con mix de semillas y cereales",
+      presentacion: "Bolsa de 5 kg",
+      aplicaciones: "Panes multicereal, barras con semillas, pan de molde integral y grisines.",
+      rendimiento: "Distribución homogénea de semillas y excelente volumen.",
+      conservacion: "Mantener en envase cerrado en lugar fresco y seco."
+    }
   },
   {
     id: 9,
@@ -290,7 +378,14 @@ const PRODUCTS = [
     unit: "Bolsa 1 kg",
     category: "harinas",
     price: 1490,
-    image: "harinadealmendras.webp"
+    image: "harinadealmendras.webp",
+    techSheet: {
+      tipo: "Almendra repelada finamente molida",
+      presentacion: "Bolsa de 1 kg",
+      aplicaciones: "Macarons, financiers, frangipane, alfajores y pastelería sin harina de trigo.",
+      rendimiento: "Granulometría fina que evita grumos en batidos delicados.",
+      conservacion: "Lugar fresco, oscuro y seco (idealmente refrigerado tras abrir)."
+    }
   },
   {
     id: 10,
@@ -298,7 +393,14 @@ const PRODUCTS = [
     unit: "Balde 4 kg",
     category: "reposteria",
     price: 1220,
-    image: "patisomalt.webp"
+    image: "patisomalt.webp",
+    techSheet: {
+      tipo: "Sustituto de azúcar para piezas artísticas y caramelo",
+      presentacion: "Balde de 4 kg",
+      aplicaciones: "Decoraciones de azúcar estirado/soplado, vitrales, pirulines y confitería.",
+      rendimiento: "Alta transparencia, baja higroscopicidad y resistencia a la humedad.",
+      conservacion: "Mantener el balde herméticamente cerrado en ambiente seco."
+    }
   },
   {
     id: 11,
@@ -306,7 +408,14 @@ const PRODUCTS = [
     unit: "Balde 5 kg",
     category: "reposteria",
     price: 1540,
-    image: "pralinedeavellanas.webp"
+    image: "pralinedeavellanas.webp",
+    techSheet: {
+      tipo: "Pasta praliné de avellanas tostadas caramelizadas",
+      presentacion: "Balde de 5 kg",
+      aplicaciones: "Rellenos de bombonería, mousses, cremas pasteleras, heladería y tortas.",
+      rendimiento: "Sabor intenso a avellana tostada y textura lista para incorporar.",
+      conservacion: "Lugar fresco y seco (15 °C a 20 °C), bien tapado."
+    }
   },
   {
     id: 12,
@@ -314,7 +423,14 @@ const PRODUCTS = [
     unit: "Bolsa 1 kg",
     category: "reposteria",
     price: 610,
-    image: "almendrasfileteadas.webp"
+    image: "almendrasfileteadas.webp",
+    techSheet: {
+      tipo: "Almendras laminadas listas para hornear o tostar",
+      presentacion: "Bolsa de 1 kg",
+      aplicaciones: "Terminación de tortas, facturas, stollen, croissants de almendra y granola.",
+      rendimiento: "Láminas parejas de tostado rápido y uniforme.",
+      conservacion: "Lugar fresco, seco y protegido de la luz."
+    }
   }
 ];
 
@@ -345,6 +461,14 @@ const checkoutMsgEl = document.getElementById("checkout-msg");
 const customerNameEl = document.getElementById("cart-customer-name");
 const customerLocationEl = document.getElementById("cart-customer-location");
 
+const techModalCategoryEl = document.getElementById("tech-modal-category");
+const techModalMediaEl = document.getElementById("tech-modal-media");
+const techModalUnitEl = document.getElementById("tech-modal-unit");
+const techModalTitleEl = document.getElementById("tech-modal-title");
+const techModalPriceEl = document.getElementById("tech-modal-price");
+const techModalSpecsEl = document.getElementById("tech-modal-specs");
+const techModalAddBtn = document.getElementById("tech-modal-add-btn");
+
 const formatUYU = (n) => `$${Number(n || 0).toLocaleString("es-UY")}`;
 
 function renderMediaBlock(product) {
@@ -352,6 +476,66 @@ function renderMediaBlock(product) {
     return `<img src="${product.image}" alt="${product.name}" class="product-thumb" loading="lazy" />`;
   }
   return `<div class="product-thumb-placeholder">Insumo · ${product.category}</div>`;
+}
+
+function addProductToCart(id) {
+  const product = PRODUCTS.find((p) => p.id === id);
+  if (!product) return;
+  const found = cart.find((item) => item.id === id);
+  if (found) found.qty += 1;
+  else cart.push({ ...product, qty: 1 });
+  saveAndRenderCart();
+}
+
+function openTechSheet(id) {
+  const product = PRODUCTS.find((p) => p.id === id);
+  if (!product || !techModal) return;
+
+  closeMobileMenu();
+  closeCart();
+  activeTechProductId = product.id;
+
+  if (techModalCategoryEl) {
+    techModalCategoryEl.textContent = CATEGORY_LABELS[product.category] || "Ficha Técnica";
+  }
+  if (techModalMediaEl) {
+    techModalMediaEl.innerHTML = renderMediaBlock(product);
+  }
+  if (techModalUnitEl) {
+    techModalUnitEl.textContent = product.unit;
+  }
+  if (techModalTitleEl) {
+    techModalTitleEl.textContent = product.name;
+  }
+  if (techModalPriceEl) {
+    techModalPriceEl.textContent = formatUYU(product.price);
+  }
+
+  if (techModalSpecsEl) {
+    const specs = product.techSheet || {};
+    const rows = [
+      ["Tipo de insumo", specs.tipo || product.name],
+      ["Presentación", specs.presentacion || product.unit],
+      ["Aplicaciones", specs.aplicaciones || "Panificación y gastronomía profesional."],
+      ["Rendimiento", specs.rendimiento || "Calidad seleccionada para obrador."],
+      ["Conservación", specs.conservacion || "Lugar fresco y seco."]
+    ];
+
+    techModalSpecsEl.innerHTML = rows
+      .map(
+        ([label, value]) => `
+        <div class="tech-spec-row">
+          <dt>${label}</dt>
+          <dd>${value}</dd>
+        </div>
+      `
+      )
+      .join("");
+  }
+
+  techModal.hidden = false;
+  techModal.setAttribute("aria-hidden", "false");
+  syncBackdrop();
 }
 
 function renderProducts() {
@@ -369,10 +553,11 @@ function renderProducts() {
   productGrid.innerHTML = list
     .map(
       (p) => `
-      <article class="product-card">
+      <article class="product-card" data-product-id="${p.id}" tabindex="0" role="button" aria-label="Ver ficha técnica de ${p.name}">
         <div>
           <div class="product-thumb-wrap">
             ${renderMediaBlock(p)}
+            <span class="product-sheet-hint">Ficha técnica</span>
           </div>
           <span class="product-meta">${p.unit}</span>
           <h3>${p.name}</h3>
@@ -446,17 +631,41 @@ document.querySelectorAll(".filter-pill").forEach((pill) => {
 
 if (productGrid) {
   productGrid.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-add]");
-    if (!btn) return;
-    const id = Number(btn.dataset.add);
-    const product = PRODUCTS.find((p) => p.id === id);
-    if (!product) return;
-    const found = cart.find((item) => item.id === id);
-    if (found) found.qty += 1;
-    else cart.push({ ...product, qty: 1 });
-    saveAndRenderCart();
+    const addBtn = e.target.closest("[data-add]");
+    if (addBtn) {
+      e.stopPropagation();
+      addProductToCart(Number(addBtn.dataset.add));
+      return;
+    }
+
+    const card = e.target.closest("[data-product-id]");
+    if (card) {
+      openTechSheet(Number(card.dataset.productId));
+    }
+  });
+
+  productGrid.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (e.target.closest("[data-add]")) return;
+    const card = e.target.closest("[data-product-id]");
+    if (card) {
+      e.preventDefault();
+      openTechSheet(Number(card.dataset.productId));
+    }
   });
 }
+
+if (techModalAddBtn) {
+  techModalAddBtn.addEventListener("click", () => {
+    if (activeTechProductId === null) return;
+    addProductToCart(activeTechProductId);
+    closeTechSheet();
+    openCart();
+  });
+}
+
+const closeTechBtn = document.getElementById("close-tech-btn");
+if (closeTechBtn) closeTechBtn.addEventListener("click", closeTechSheet);
 
 if (cartItemsEl) {
   cartItemsEl.addEventListener("click", (e) => {
@@ -479,7 +688,7 @@ const openCartBtn = document.getElementById("open-cart-btn");
 const closeCartBtn = document.getElementById("close-cart-btn");
 if (openCartBtn) openCartBtn.addEventListener("click", openCart);
 if (closeCartBtn) closeCartBtn.addEventListener("click", closeCart);
-if (backdrop) backdrop.addEventListener("click", closeCart);
+if (backdrop) backdrop.addEventListener("click", closeAllOverlays);
 
 const checkoutBtn = document.getElementById("checkout-btn");
 if (checkoutBtn) {

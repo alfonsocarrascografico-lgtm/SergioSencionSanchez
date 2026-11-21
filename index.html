@@ -233,8 +233,42 @@
     <button type="button" id="next-panel" class="arrow-btn" aria-label="Siguiente sección">→</button>
   </div>
 
-  <!-- OVERLAY OSCURO PARA DRAWERS -->
+  <!-- OVERLAY OSCURO PARA DRAWERS Y MODALES -->
   <div id="backdrop" class="backdrop" hidden></div>
+
+  <!-- MODAL FICHA TÉCNICA DE PRODUCTO -->
+  <div
+    id="tech-modal"
+    class="tech-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tech-modal-title"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="tech-modal-header">
+      <span class="tag" id="tech-modal-category">Ficha Técnica</span>
+      <button type="button" id="close-tech-btn" class="icon-close" aria-label="Cerrar ficha técnica">✕</button>
+    </div>
+
+    <div class="tech-modal-body">
+      <div class="tech-modal-media" id="tech-modal-media"></div>
+
+      <div class="tech-modal-info">
+        <span class="product-meta" id="tech-modal-unit"></span>
+        <h3 id="tech-modal-title"></h3>
+        <div class="product-price" id="tech-modal-price"></div>
+
+        <dl class="tech-specs" id="tech-modal-specs"></dl>
+
+        <div class="tech-modal-actions">
+          <button type="button" id="tech-modal-add-btn" class="btn btn-primary btn-full">
+            Agregar al pedido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- DRAWER CARRITO -->
   <aside id="cart-drawer" class="cart-drawer" aria-label="Carrito de compras" aria-hidden="true">

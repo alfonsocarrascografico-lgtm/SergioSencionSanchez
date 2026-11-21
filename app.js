@@ -11,6 +11,7 @@ const cartDrawer = document.getElementById("cart-drawer");
 const backdrop = document.getElementById("backdrop");
 
 const MOBILE_BREAKPOINT = 860;
+const MOBILE_TOPBAR_H = 66;
 let currentIndex = 0;
 let wheelLock = false;
 
@@ -64,7 +65,7 @@ function goToPanel(index) {
       behavior: "smooth"
     });
   } else {
-    const topOffset = panels[clamped].offsetTop - 60;
+    const topOffset = panels[clamped].offsetTop - MOBILE_TOPBAR_H;
     window.scrollTo({
       top: Math.max(0, topOffset),
       behavior: "smooth"
@@ -137,7 +138,7 @@ const observer = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.25 }
+  { threshold: isMobile() ? 0.08 : 0.25 }
 );
 
 panels.forEach((panel) => observer.observe(panel));
@@ -253,7 +254,7 @@ const formatUYU = (n) => `$${n.toLocaleString("es-UY")}`;
 
 function renderMediaBlock(product) {
   if (product.image) {
-    return `<img src="${product.image}" alt="${product.name}" class="product-thumb" loading="lazy" />`;
+    return `<img src="${product.image}" alt="${product.name}" class="product-thumb" />`;
   }
   return `<div class="product-thumb-placeholder">Insumo · ${product.category}</div>`;
 }

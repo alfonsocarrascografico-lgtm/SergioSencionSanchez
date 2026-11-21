@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bizcochos bajos en azúcar — Sergio Sención Sánchez</title>
+  <style>
+    :root {
+      --brand-red: #a8221a;
+      --brand-orange: #e6651a;
+      --brand-orange-hover: #c85210;
+      --bg-ivory: #f7f5f0;
+      --bg-warm: #efe8dc;
+      --bg-orange-tint: #fdf2ea;
+      --surface: #ffffff;
+      --ink: #1e1a17;
+      --muted: #635950;
+      --border: #dfd5c7;
+      --radius: 10px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-ivory);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(247, 245, 240, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      display: block;
+      height: 54px;
+      width: auto;
+      max-width: 185px;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--brand-red);
+      background: var(--surface);
+      color: var(--brand-red);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: var(--bg-orange-tint);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    .recipe-header {
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: var(--bg-orange-tint);
+      color: var(--brand-red);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      max-width: 66ch;
+      font-size: 1.03rem;
+    }
+
+    .specs-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 26px 0 32px;
+    }
+
+    .spec-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .spec-box span {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .spec-box strong {
+      font-size: 1.05rem;
+      color: var(--brand-red);
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.25fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      border-bottom: 2px solid var(--brand-orange);
+      padding-bottom: 8px;
+    }
+
+    .formula-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    .formula-table th,
+    .formula-table td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .formula-table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .formula-table td:last-child,
+    .formula-table th:last-child {
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .steps-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 16px;
+    }
+
+    .steps-list li {
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps-list li:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .step-title {
+      display: block;
+      font-weight: 800;
+      color: var(--brand-red);
+      margin-bottom: 4px;
+    }
+
+    .tip-box {
+      margin-top: 24px;
+      background: var(--bg-warm);
+      border-left: 4px solid var(--brand-orange);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .tip-box strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .cta-bar {
+      margin-top: 32px;
+      padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      border-radius: 8px;
+      background: var(--brand-orange);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-orange-hover);
+    }
+
+    @media (max-width: 820px) {
+      .topbar {
+        padding: 10px 16px;
+      }
+
+      .specs-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .recipe-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-logo {
+        height: 44px;
+      }
+
+      .specs-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="brand" aria-label="Sergio Sención Sánchez Distribuciones - Inicio">
+      <img src="logo sergio.png" alt="Sergio Sención Sánchez Distribuciones" class="brand-logo" />
+    </a>
+    <a href="index.html#recetas" class="back-link">← Volver a Recetas</a>
+  </header>
+
+  <main class="container">
+    <header class="recipe-header">
+      <span class="tag">Repostería</span>
+      <h1>Bizcochos bajos en azúcar</h1>
+      <p class="lead">
+        Ajuste de humedad, aireación y temperatura de horneado para lograr bizcochos tiernos y con
+        buena vida útil reduciendo el azúcar añadido sin resecar la miga.
+      </p>
+    </header>
+
+    <section class="specs-bar" aria-label="Parámetros técnicos">
+      <div class="spec-box">
+        <span>Humedad / Líquidos</span>
+        <strong>65% — 72%</strong>
+      </div>
+      <div class="spec-box">
+        <span>Batido</span>
+        <strong>6 a 8 min (media-alta)</strong>
+      </div>
+      <div class="spec-box">
+        <span>Horneado</span>
+        <strong>170 °C — 175 °C</strong>
+      </div>
+      <div class="spec-box">
+        <span>Conservación</span>
+        <strong>Envase hermético / fresco</strong>
+      </div>
+    </section>
+
+    <div class="recipe-grid">
+      <section class="card">
+        <h2>Fórmula base (2 kg harina base)</h2>
+        <table class="formula-table">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Peso</th>
+              <th>% Base</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Harina de repostería / mezcla base</td>
+              <td>2,00 kg</td>
+              <td>100 %</td>
+            </tr>
+            <tr>
+              <td>Huevos enteros (temp. ambiente)</td>
+              <td>1,10 kg</td>
+              <td>55 %</td>
+            </tr>
+            <tr>
+              <td>Leche o bebida vegetal</td>
+              <td>500 g</td>
+              <td>25 %</td>
+            </tr>
+            <tr>
+              <td>Aceite suave o manteca fundida</td>
+              <td>400 g</td>
+              <td>20 %</td>
+            </tr>
+            <tr>
+              <td>Endulzante / azúcar reducido</td>
+              <td>300 g</td>
+              <td>15 %</td>
+            </tr>
+            <tr>
+              <td>Polvo de hornear</td>
+              <td>45 g</td>
+              <td>2,25 %</td>
+            </tr>
+            <tr>
+              <td>Esencia de vainilla / ralladura</td>
+              <td>20 g</td>
+              <td>1 %</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tip-box">
+          <strong>Clave para evitar que se sequen</strong>
+          <span>
+            Al reducir el azúcar —que retiene humedad y aporta terneza—, conviene mantener una
+            temperatura de horno moderada (170–175 °C), no sobrehornear y envasar apenas enfrían
+            para conservar su esponjosidad.
+          </span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Proceso en obrador</h2>
+        <ol class="steps-list">
+          <li>
+            <span class="step-title">1. Preparación y precalentado</span>
+            Encender el horno a 170–175 °C con antelación y preparar los moldes con papel manteca o
+            desmoldante. Tamizar la harina junto con el polvo de hornear.
+          </li>
+          <li>
+            <span class="step-title">2. Emulsión y aireado</span>
+            Batir los huevos junto con el endulzante/azúcar reducido y la esencia a velocidad
+            media-alta durante 6 a 8 minutos hasta lograr una espuma cremosa y sostenida.
+          </li>
+          <li>
+            <span class="step-title">3. Incorporación de líquidos y secos</span>
+            Bajar la velocidad y alternar suavemente la harina tamizada con la leche y el aceite o
+            manteca fundida fría, mezclando solo lo necesario para integrar sin perder aire.
+          </li>
+          <li>
+            <span class="step-title">4. Llenado de moldes</span>
+            Distribuir la mezcla en los moldes hasta unos dos tercios de su altura y dar un ligero
+            golpe en la mesada para liberar burbujas grandes.
+          </li>
+          <li>
+            <span class="step-title">5. Horneado y enfriado</span>
+            Hornear a 170–175 °C hasta que al pinchar con un palillo salga limpio y la superficie
+            tenga un dorado parejo. Reposar 10 minutos en el molde, desmoldar sobre rejilla y enfriar
+            por completo antes de empacar.
+          </li>
+        </ol>
+      </section>
+    </div>
+
+    <div class="cta-bar">
+      <div>
+        <strong>¿Querés sumar insumos para repostería y líneas especiales?</strong>
+        <div style="color: var(--muted); font-size: 0.92rem;">
+          Revisá las opciones disponibles en la tienda o consultá por atención comercial.
+        </div>
+      </div>
+      <a href="index.html#tienda" class="btn-primary">Explorar tienda</a>
+    </div>
+  </main>
+</body>
+</html>

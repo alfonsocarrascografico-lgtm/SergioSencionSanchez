@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masa madre y fermentación lenta — Sergio Sención Sánchez</title>
+  <style>
+    :root {
+      --brand-red: #a8221a;
+      --brand-orange: #e6651a;
+      --brand-orange-hover: #c85210;
+      --bg-ivory: #f7f5f0;
+      --bg-warm: #efe8dc;
+      --bg-orange-tint: #fdf2ea;
+      --surface: #ffffff;
+      --ink: #1e1a17;
+      --muted: #635950;
+      --border: #dfd5c7;
+      --radius: 10px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-ivory);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(247, 245, 240, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      display: block;
+      height: 54px;
+      width: auto;
+      max-width: 185px;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--brand-red);
+      background: var(--surface);
+      color: var(--brand-red);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: var(--bg-orange-tint);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    .recipe-header {
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: var(--bg-orange-tint);
+      color: var(--brand-red);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      max-width: 66ch;
+      font-size: 1.03rem;
+    }
+
+    .specs-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 26px 0 32px;
+    }
+
+    .spec-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .spec-box span {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .spec-box strong {
+      font-size: 1.05rem;
+      color: var(--brand-red);
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.25fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      border-bottom: 2px solid var(--brand-orange);
+      padding-bottom: 8px;
+    }
+
+    .formula-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    .formula-table th,
+    .formula-table td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .formula-table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .formula-table td:last-child,
+    .formula-table th:last-child {
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .steps-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 16px;
+    }
+
+    .steps-list li {
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps-list li:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .step-title {
+      display: block;
+      font-weight: 800;
+      color: var(--brand-red);
+      margin-bottom: 4px;
+    }
+
+    .tip-box {
+      margin-top: 24px;
+      background: var(--bg-warm);
+      border-left: 4px solid var(--brand-orange);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .tip-box strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .cta-bar {
+      margin-top: 32px;
+      padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      border-radius: 8px;
+      background: var(--brand-orange);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-orange-hover);
+    }
+
+    @media (max-width: 820px) {
+      .topbar {
+        padding: 10px 16px;
+      }
+
+      .specs-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .recipe-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-logo {
+        height: 44px;
+      }
+
+      .specs-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="brand" aria-label="Sergio Sención Sánchez Distribuciones - Inicio">
+      <img src="logo sergio.png" alt="Sergio Sención Sánchez Distribuciones" class="brand-logo" />
+    </a>
+    <a href="index.html#recetas" class="back-link">← Volver a Recetas</a>
+  </header>
+
+  <main class="container">
+    <header class="recipe-header">
+      <span class="tag">Panificación Artesanal</span>
+      <h1>Masa madre y fermentación lenta</h1>
+      <p class="lead">
+        Fórmula base de obrador con porcentaje panadero para obtener hogazas de corteza crocante,
+        miga alveolada y mayor conservación utilizando harinas panaderas de fuerza media-alta.
+      </p>
+    </header>
+
+    <section class="specs-bar" aria-label="Parámetros técnicos">
+      <div class="spec-box">
+        <span>Hidratación</span>
+        <strong>72% — 75%</strong>
+      </div>
+      <div class="spec-box">
+        <span>Fermentación en bloque</span>
+        <strong>3,5 a 4 h (24 °C)</strong>
+      </div>
+      <div class="spec-box">
+        <span>Retardo en frío</span>
+        <strong>12 a 16 h (4 °C)</strong>
+      </div>
+      <div class="spec-box">
+        <span>Horneado</span>
+        <strong>245 °C → 220 °C</strong>
+      </div>
+    </section>
+
+    <div class="recipe-grid">
+      <section class="card">
+        <h2>Fórmula base (10 kg harina)</h2>
+        <table class="formula-table">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Peso</th>
+              <th>% Panadero</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Harina Panadera Superior</td>
+              <td>9,00 kg</td>
+              <td>90 %</td>
+            </tr>
+            <tr>
+              <td>Harina Integral / Centeno</td>
+              <td>1,00 kg</td>
+              <td>10 %</td>
+            </tr>
+            <tr>
+              <td>Agua fría (16–18 °C)</td>
+              <td>7,20 l</td>
+              <td>72 %</td>
+            </tr>
+            <tr>
+              <td>Masa madre activa (100 % hidr.)</td>
+              <td>2,00 kg</td>
+              <td>20 %</td>
+            </tr>
+            <tr>
+              <td>Sal fina</td>
+              <td>210 g</td>
+              <td>2,1 %</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tip-box">
+          <strong>Insumo recomendado de catálogo</strong>
+          <span>
+            Molino Dolores Panadera Superior (Bolsa 25 kg · Panadera B) para sostener fermentaciones
+            prolongadas en cámara de frío sin pérdida de tenacidad.
+          </span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Proceso en obrador</h2>
+        <ol class="steps-list">
+          <li>
+            <span class="step-title">1. Autólisis (45 minutos)</span>
+            Mezclar las harinas con el 68 % del agua en primera velocidad hasta hidratar por completo.
+            Dejar reposar cubierto para desarrollar gluten de forma pasiva y reducir el tiempo de amasado.
+          </li>
+          <li>
+            <span class="step-title">2. Incorporación y amasado</span>
+            Añadir la masa madre activa y amasar 4 minutos en primera velocidad. Incorporar la sal
+            junto con el 4 % de agua restante y llevar a segunda velocidad hasta lograr temperatura final
+            de masa entre 24 °C y 25 °C.
+          </li>
+          <li>
+            <span class="step-title">3. Fermentación en bloque y pliegues</span>
+            Pasar la masa a cubeta ligeramente aceitada. Realizar 3 pliegues laminados cada 45 minutos
+            durante las primeras 2 horas y dejar completar el volumen (aumento de 40–50 %).
+          </li>
+          <li>
+            <span class="step-title">4. División, preformado y formado</span>
+            Dividir piezas de 750 g a 850 g, preformar sin desgasificar en exceso, reposar 20 minutos
+            en mesa y formar con tensión superficial uniforme hacia banetones enharinados.
+          </li>
+          <li>
+            <span class="step-title">5. Fermentación retardada y horneado</span>
+            Llevar a cámara a 4 °C entre 12 y 16 horas. Greñar en frío y hornear con vapor inicial a
+            245 °C durante 18 minutos; liberar vapor y terminar a 220 °C otros 20–22 minutos hasta
+            alcanzar corteza caramelizada.
+          </li>
+        </ol>
+      </section>
+    </div>
+
+    <div class="cta-bar">
+      <div>
+        <strong>¿Necesitás abastecer tu obrador con harinas panaderas?</strong>
+        <div style="color: var(--muted); font-size: 0.92rem;">
+          Consultá disponibilidad por bolsa o pallet con entrega desde Durazno a todo el país.
+        </div>
+      </div>
+      <a href="index.html#tienda" class="btn-primary">Ver harinas en tienda</a>
+    </div>
+  </main>
+</body>
+</html>

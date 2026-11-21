@@ -962,3 +962,25 @@ h2 {
     width: 100%;
   }
 }
+.cart-buyer-fields {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cart-field {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cart-field input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 16px;
+  background: var(--surface);
+}

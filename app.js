@@ -258,7 +258,7 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Pastera A",
     category: "harinas",
     price: 1250,
-    image: "harinaamarillaparatiendaweb.jpg",
+    image: "fideera.jpg",
     techSheet: {
       tipo: "Harina de trigo Pastera A",
       presentacion: "Bolsa de 25 kg",
@@ -273,7 +273,7 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Panadera C",
     category: "harinas",
     price: 1180,
-    image: "IMG_20260418_110003-eZDuHPR7S_vpUngCIHLtUA.jpg",
+    image: "panadera.jpg",
     techSheet: {
       tipo: "Harina de trigo Panadera C adicionada",
       presentacion: "Bolsa de 25 kg",
@@ -288,7 +288,7 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Panadera C",
     category: "harinas",
     price: 1190,
-    image: "IMG_20260418_110515-WoUc_N1egkx198m2ki3LVQ.jpg",
+    image: "panadera verde.jpg",
     techSheet: {
       tipo: "Harina de trigo Panadera C · Línea Verde",
       presentacion: "Bolsa de 25 kg",
@@ -303,7 +303,7 @@ const PRODUCTS = [
     unit: "Bolsa 25 kg · Panadera B",
     category: "harinas",
     price: 1290,
-    image: "IMG_20260418_112549_1-Zy2K2zDtGtg8hqCtUgWlAw.jpg",
+    image: "panadera superior.jpg",
     techSheet: {
       tipo: "Harina de trigo Panadera B de fuerza superior",
       presentacion: "Bolsa de 25 kg",

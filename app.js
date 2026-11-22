@@ -252,11 +252,14 @@ window.addEventListener("resize", () => {
 
 /* --- CATÁLOGO DE PRODUCTOS CON FICHAS TÉCNICAS --- */
 const CATEGORY_LABELS = {
-  harinas: "Harinas y Premezclas",
-  especiales: "Dietas Especiales",
-  reposteria: "Repostería"
+  puratos: "Productos Puratos",
+  harinas: "Harinas, Premezclas y Levaduras",
+  pasteleria: "Pastelería y Confitería",
+  "almacen-gastronomia": "Insumos de Almacén y Gastronomía"
 };
 
+/* Nota: category puede ser un texto ("harinas") o una lista (["harinas", "puratos"])
+   para que un mismo producto aparezca en más de un botón de filtro. */
 const PRODUCTS = [
   {
     id: 1,
@@ -322,7 +325,7 @@ const PRODUCTS = [
     id: 5,
     name: "Easy Prepizza",
     unit: "Bolsa 10 kg",
-    category: "harinas",
+    category: ["harinas", "puratos"],
     price: 1380,
     image: "easypizza.webp",
     techSheet: {
@@ -337,7 +340,7 @@ const PRODUCTS = [
     id: 6,
     name: "Easy Salvado",
     unit: "Bolsa 5 kg",
-    category: "especiales",
+    category: ["harinas", "puratos"],
     price: 980,
     image: "easysalvado.webp",
     techSheet: {
@@ -352,7 +355,7 @@ const PRODUCTS = [
     id: 7,
     name: "Easy Pan Blanco tipo Artesanal",
     unit: "Bolsa 10 kg",
-    category: "especiales",
+    category: ["harinas", "puratos"],
     price: 1420,
     image: "easypanblanco.webp",
     techSheet: {
@@ -367,7 +370,7 @@ const PRODUCTS = [
     id: 8,
     name: "Easy Multicereal Plus",
     unit: "Bolsa 5 kg",
-    category: "especiales",
+    category: ["harinas", "puratos"],
     price: 1190,
     image: "easymulticereal.webp",
     techSheet: {
@@ -382,7 +385,7 @@ const PRODUCTS = [
     id: 9,
     name: "Harina de Almendras",
     unit: "Bolsa 1 kg",
-    category: "harinas",
+    category: ["puratos", "harinas", "pasteleria"],
     price: 1490,
     image: "harinadealmendras.webp",
     techSheet: {
@@ -397,7 +400,7 @@ const PRODUCTS = [
     id: 10,
     name: "Patis´omalt",
     unit: "Balde 4 kg",
-    category: "reposteria",
+    category: ["pasteleria", "puratos"],
     price: 1220,
     image: "patisomalt.webp",
     techSheet: {
@@ -410,9 +413,9 @@ const PRODUCTS = [
   },
   {
     id: 11,
-    name: "praline de avellanas",
+    name: "Praliné de avellanas",
     unit: "Balde 5 kg",
-    category: "reposteria",
+    category: ["pasteleria", "puratos"],
     price: 1540,
     image: "pralinedeavellanas.webp",
     techSheet: {
@@ -427,7 +430,7 @@ const PRODUCTS = [
     id: 12,
     name: "Almendras fileteadas",
     unit: "Bolsa 1 kg",
-    category: "reposteria",
+    category: "pasteleria",
     price: 610,
     image: "almendrasfileteadas.webp",
     techSheet: {
@@ -439,6 +442,11 @@ const PRODUCTS = [
     }
   }
 ];
+
+function getProductCategories(product) {
+  if (Array.isArray(product.category)) return product.category;
+  return product.category ? [product.category] : [];
+}
 
 const CART_KEY = "sss_horizontal_cart_v3";
 let cart = [];
@@ -458,7 +466,7 @@ try {
   cart = [];
 }
 
-const VALID_CATEGORIES = ["todos", "harinas", "especiales", "reposteria"];
+const VALID_CATEGORIES = ["todos", "puratos", "harinas", "pasteleria", "almacen-gastronomia"];
 const urlCategory = new URLSearchParams(window.location.search).get("categoria");
 let activeCategory = VALID_CATEGORIES.includes(urlCategory) ? urlCategory : "todos";
 
@@ -481,10 +489,12 @@ const techModalAddBtn = document.getElementById("tech-modal-add-btn");
 const formatUYU = (n) => `$${Number(n || 0).toLocaleString("es-UY")}`;
 
 function renderMediaBlock(product) {
+  const cats = getProductCategories(product);
+  const label = cats.map((c) => CATEGORY_LABELS[c] || c).join(" · ") || "Insumo";
   if (product.image) {
     return `<img src="${product.image}" alt="${product.name}" class="product-thumb" loading="lazy" />`;
   }
-  return `<div class="product-thumb-placeholder">Insumo · ${product.category}</div>`;
+  return `<div class="product-thumb-placeholder">Insumo · ${label}</div>`;
 }
 
 function addProductToCart(id) {
@@ -504,8 +514,12 @@ function openTechSheet(id) {
   closeCart();
   activeTechProductId = product.id;
 
+  const cats = getProductCategories(product);
+  const categoryText =
+    cats.map((c) => CATEGORY_LABELS[c]).filter(Boolean).join(" · ") || "Ficha Técnica";
+
   if (techModalCategoryEl) {
-    techModalCategoryEl.textContent = CATEGORY_LABELS[product.category] || "Ficha Técnica";
+    techModalCategoryEl.textContent = categoryText;
   }
   if (techModalMediaEl) {
     techModalMediaEl.innerHTML = renderMediaBlock(product);
@@ -560,7 +574,7 @@ function renderProducts() {
   const list =
     activeCategory === "todos"
       ? PRODUCTS
-      : PRODUCTS.filter((p) => p.category === activeCategory);
+      : PRODUCTS.filter((p) => getProductCategories(p).includes(activeCategory));
 
   if (!list.length) {
     productGrid.innerHTML = "<p>No hay insumos cargados en esta categoría todavía.</p>";

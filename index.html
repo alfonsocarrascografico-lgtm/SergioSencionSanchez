@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sergio Sención Sánchez — Insumos para Panaderías y Gastronomía</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .cards-4-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+    @media (max-width: 1024px) {
+      .cards-4-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 560px) {
+      .cards-4-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -116,21 +134,26 @@
           <a href="tienda.html" class="btn btn-primary">Ver catálogo completo</a>
         </header>
 
-        <div class="cards-3 reveal delay-1">
+        <div class="cards-4-row reveal delay-1">
+          <a href="tienda.html?categoria=puratos" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
+            <span class="tag">Línea Oficial</span>
+            <h3>Productos Puratos</h3>
+            <p><br>Mejoradores, premezclas, rellenos, coberturas y soluciones técnicas para obrador.</p>
+          </a>
           <a href="tienda.html?categoria=harinas" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
             <span class="tag">Línea Base</span>
-            <h3>Harinas y Premezclas</h3>
-            <p>Molino Dolores, harinas de fuerza, pastera, prepizzas y harinas especiales para obrador.</p>
+            <h3>Harinas, Premezclas y Levaduras</h3>
+            <p>Molino Dolores, harinas de fuerza, pastera, levaduras y premezclas de panificación.</p>
           </a>
-          <a href="tienda.html?categoria=especiales" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
-            <span class="tag">Panificados Especiales</span>
-            <h3>Dietas Especiales</h3>
-            <p>Premezclas con salvado, multicereal y formulaciones para panes rústicos y artesanales.</p>
+          <a href="tienda.html?categoria=pasteleria" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
+            <span class="tag">Dulce y Terminación</span>
+            <h3>Pastelería y Confitería</h3>
+            <p><br>Praliné de avellanas, Patis´omalt, frutos secos laminados e insumos de terminación.</p>
           </a>
-          <a href="tienda.html?categoria=reposteria" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
-            <span class="tag">Pastelería y Confitería</span>
-            <h3>Repostería</h3>
-            <p>Praliné de avellanas, Patis´omalt, frutos secos laminados e insumos de terminación.</p>
+          <a href="tienda.html?categoria=almacen-gastronomia" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
+            <span class="tag">Despensa y Cocina</span>
+            <h3>Insumos de Almacén y Gastronomía</h3>
+            <p>Materias primas y soluciones para panaderías y locales gastronómicos.</p>
           </a>
         </div>
 
@@ -170,11 +193,13 @@
             <h3>Coordinación logística</h3>
             <p>Confirmamos disponibilidad, presentación y ventana horaria de despacho desde Durazno.</p>
           </article>
-          <article class="feature-card">
-            <span class="step-num">03</span>
-            <h3>Entrega puntual</h3>
-            <p>Reparto local y envíos por agencia al interior y Montevideo con seguimiento directo.</p>
-          </article>
+          <a href="dias-entrega.html" style="text-decoration: none; color: inherit; display: block;">
+            <article class="feature-card">
+              <span class="step-num">03</span>
+              <h3>Entrega puntual</h3>
+              <p>Reparto a ciudades y agencias.<br>Ver días de entregas →</p>
+            </article>
+          </a>
         </div>
 
         <div class="reveal delay-1" style="width: 100%; height: clamp(150px, 28vh, 240px); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.35); background: #1e1a17;">

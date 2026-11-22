@@ -105,7 +105,7 @@
       </div>
     </section>
 
-    <!-- SECCIÓN 2: TIENDA -->
+    <!-- SECCIÓN 2: TIENDA (PRESENTACIÓN POR LÍNEAS) -->
     <section id="tienda" class="panel panel-store is-visible" data-index="1">
       <div class="panel-inner column-layout">
         <header class="section-header reveal">
@@ -113,15 +113,26 @@
             <span class="kicker">Catálogo Mayorista y Profesional</span>
             <h2>Insumos para panificación y repostería</h2>
           </div>
-          <div class="filter-bar" role="group" aria-label="Filtrar catálogo">
-            <button type="button" class="filter-pill active" data-category="todos">Todos</button>
-            <button type="button" class="filter-pill" data-category="harinas">Harinas y Premezclas</button>
-            <button type="button" class="filter-pill" data-category="especiales">Dietas Especiales</button>
-            <button type="button" class="filter-pill" data-category="reposteria">Repostería</button>
-          </div>
+          <a href="tienda.html" class="btn btn-primary">Ver catálogo completo</a>
         </header>
 
-        <div id="product-grid" class="store-grid reveal delay-1"></div>
+        <div class="cards-3 reveal delay-1">
+          <a href="tienda.html?categoria=harinas" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
+            <span class="tag">Línea Base</span>
+            <h3>Harinas y Premezclas</h3>
+            <p>Molino Dolores, harinas de fuerza, pastera, prepizzas y harinas especiales para obrador.</p>
+          </a>
+          <a href="tienda.html?categoria=especiales" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
+            <span class="tag">Panificados Especiales</span>
+            <h3>Dietas Especiales</h3>
+            <p>Premezclas con salvado, multicereal y formulaciones para panes rústicos y artesanales.</p>
+          </a>
+          <a href="tienda.html?categoria=reposteria" class="recipe-card" style="text-decoration: none; color: inherit; display: block;">
+            <span class="tag">Pastelería y Confitería</span>
+            <h3>Repostería</h3>
+            <p>Praliné de avellanas, Patis´omalt, frutos secos laminados e insumos de terminación.</p>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -196,7 +207,7 @@
           <p class="lead">
             Consultanos por listas de precios actualizadas, compras recurrentes o disponibilidad de líneas especiales.
           </p>
-         <ul class="contact-list">
+          <ul class="contact-list">
             <li><strong>Dirección:</strong> Antonio Grasiuso 926, 97000 Durazno, Uruguay</li>
             <li><strong>Teléfono:</strong> <a href="tel:+59843622500">+598 4362 2500</a></li>
             <li><strong>WhatsApp:</strong> <a href="https://wa.me/59899703667" target="_blank" rel="noopener noreferrer">+598 99 703 667</a></li>
@@ -235,40 +246,6 @@
 
   <!-- OVERLAY OSCURO PARA DRAWERS Y MODALES -->
   <div id="backdrop" class="backdrop" hidden></div>
-
-  <!-- MODAL FICHA TÉCNICA DE PRODUCTO -->
-  <div
-    id="tech-modal"
-    class="tech-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="tech-modal-title"
-    aria-hidden="true"
-    hidden
-  >
-    <div class="tech-modal-header">
-      <span class="tag" id="tech-modal-category">Ficha Técnica</span>
-      <button type="button" id="close-tech-btn" class="icon-close" aria-label="Cerrar ficha técnica">✕</button>
-    </div>
-
-    <div class="tech-modal-body">
-      <div class="tech-modal-media" id="tech-modal-media"></div>
-
-      <div class="tech-modal-info">
-        <span class="product-meta" id="tech-modal-unit"></span>
-        <h3 id="tech-modal-title"></h3>
-        <div class="product-price" id="tech-modal-price"></div>
-
-        <dl class="tech-specs" id="tech-modal-specs"></dl>
-
-        <div class="tech-modal-actions">
-          <button type="button" id="tech-modal-add-btn" class="btn btn-primary btn-full">
-            Agregar al pedido
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- DRAWER CARRITO -->
   <aside id="cart-drawer" class="cart-drawer" aria-label="Carrito de compras" aria-hidden="true">

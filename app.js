@@ -1,7 +1,7 @@
 const stage = document.getElementById("horizontal-stage");
 const panels = Array.from(document.querySelectorAll(".panel"));
-const navLinks = Array.from(document.querySelectorAll(".nav-link"));
-const mobileLinks = Array.from(document.querySelectorAll(".mobile-link"));
+const navLinks = Array.from(document.querySelectorAll(".nav-link[data-nav]"));
+const mobileLinks = Array.from(document.querySelectorAll(".mobile-link[data-nav]"));
 const progressFill = document.getElementById("scroll-progress");
 const panelIndicator = document.getElementById("panel-indicator");
 
@@ -81,14 +81,18 @@ function updateUIState(index) {
   const clamped = Math.max(0, Math.min(panels.length - 1, index));
   currentIndex = clamped;
 
-  navLinks.forEach((link, idx) => link.classList.toggle("active", idx === clamped));
-  mobileLinks.forEach((link, idx) => link.classList.toggle("active", idx === clamped));
+  if (navLinks.length) {
+    navLinks.forEach((link, idx) => link.classList.toggle("active", idx === clamped));
+  }
+  if (mobileLinks.length) {
+    mobileLinks.forEach((link, idx) => link.classList.toggle("active", idx === clamped));
+  }
 
   if (panelIndicator) {
     panelIndicator.textContent = `${String(clamped + 1).padStart(2, "0")} / ${String(panels.length).padStart(2, "0")}`;
   }
 
-  if (progressFill && !isMobile()) {
+  if (progressFill && !isMobile() && panels.length > 1) {
     const denominator = Math.max(1, panels.length - 1);
     const pct = (clamped / denominator) * 100;
     progressFill.style.width = `${pct}%`;
@@ -116,7 +120,7 @@ function goToPanel(index) {
   updateUIState(clamped);
 }
 
-if (stage) {
+if (stage && panels.length > 1) {
   stage.addEventListener(
     "wheel",
     (e) => {
@@ -179,7 +183,7 @@ const observer = new IntersectionObserver(
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("is-visible");
-        if (isMobile()) {
+        if (isMobile() && panels.length > 1) {
           updateUIState(Number(entry.target.dataset.index));
         }
       }
@@ -230,15 +234,17 @@ window.addEventListener("keydown", (e) => {
     return;
   }
 
-  if (e.key === "ArrowRight") goToPanel(currentIndex + 1);
-  if (e.key === "ArrowLeft") goToPanel(currentIndex - 1);
+  if (panels.length > 1) {
+    if (e.key === "ArrowRight") goToPanel(currentIndex + 1);
+    if (e.key === "ArrowLeft") goToPanel(currentIndex - 1);
+  }
 });
 
 window.addEventListener("resize", () => {
   ensurePanelsVisible();
   if (!isMobile()) {
     closeMobileMenu();
-    if (stage) {
+    if (stage && panels.length > 1) {
       stage.scrollLeft = currentIndex * window.innerWidth;
     }
   }
@@ -451,7 +457,10 @@ try {
 } catch (_err) {
   cart = [];
 }
-let activeCategory = "todos";
+
+const VALID_CATEGORIES = ["todos", "harinas", "especiales", "reposteria"];
+const urlCategory = new URLSearchParams(window.location.search).get("categoria");
+let activeCategory = VALID_CATEGORIES.includes(urlCategory) ? urlCategory : "todos";
 
 const productGrid = document.getElementById("product-grid");
 const cartItemsEl = document.getElementById("cart-items");
@@ -538,6 +547,14 @@ function openTechSheet(id) {
   syncBackdrop();
 }
 
+function setActiveCategory(category) {
+  activeCategory = VALID_CATEGORIES.includes(category) ? category : "todos";
+  document.querySelectorAll(".filter-pill").forEach((pill) => {
+    pill.classList.toggle("active", pill.dataset.category === activeCategory);
+  });
+  renderProducts();
+}
+
 function renderProducts() {
   if (!productGrid) return;
   const list =
@@ -622,10 +639,7 @@ function saveAndRenderCart() {
 
 document.querySelectorAll(".filter-pill").forEach((pill) => {
   pill.addEventListener("click", () => {
-    document.querySelectorAll(".filter-pill").forEach((p) => p.classList.remove("active"));
-    pill.classList.add("active");
-    activeCategory = pill.dataset.category;
-    renderProducts();
+    setActiveCategory(pill.dataset.category);
   });
 });
 
@@ -766,6 +780,6 @@ if (contactForm) {
 }
 
 ensurePanelsVisible();
-renderProducts();
+setActiveCategory(activeCategory);
 saveAndRenderCart();
 updateUIState(0);

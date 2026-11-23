@@ -10,30 +10,40 @@ const mobileDrawer = document.getElementById("mobile-drawer");
 const cartDrawer = document.getElementById("cart-drawer");
 const techModal = document.getElementById("tech-modal");
 const backdrop = document.getElementById("backdrop");
-const splashGate = document.getElementById("splash-gate");
+const introGate = document.getElementById("intro-gate");
+const enterSiteBtn = document.getElementById("enter-site-btn");
 
 const MOBILE_BREAKPOINT = 860;
 const MOBILE_TOPBAR_H = 66;
 const WHATSAPP_NUMBER = "59899703667";
+const SECTION_HASH_MAP = {
+  "#inicio": 0,
+  "#tienda": 1,
+  "#envios": 2,
+  "#recetas": 3,
+  "#contacto": 4
+};
+
 let currentIndex = 0;
 let wheelLock = false;
 let activeTechProductId = null;
 
-if (splashGate) {
-  const enterSite = () => {
-    splashGate.classList.add("is-hidden");
-    setTimeout(() => {
-      splashGate.remove();
-    }, 350);
-  };
+function closeIntro(immediate = false) {
+  if (!introGate) return;
+  if (immediate) {
+    introGate.style.transition = "none";
+  }
+  introGate.classList.add("is-hidden");
+  introGate.setAttribute("aria-hidden", "true");
+  if (immediate) {
+    requestAnimationFrame(() => {
+      introGate.style.transition = "";
+    });
+  }
+}
 
-  splashGate.addEventListener("click", enterSite);
-  splashGate.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      enterSite();
-    }
-  });
+if (enterSiteBtn) {
+  enterSiteBtn.addEventListener("click", () => closeIntro(false));
 }
 
 const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;
@@ -117,22 +127,25 @@ function updateUIState(index) {
   }
 }
 
-function goToPanel(index) {
+function goToPanel(index, immediate = false) {
   if (!panels.length) return;
   const clamped = Math.max(0, Math.min(panels.length - 1, index));
+  closeIntro(immediate);
   closeMobileMenu();
   ensurePanelsVisible();
+
+  const behavior = immediate ? "auto" : "smooth";
 
   if (!isMobile() && stage) {
     stage.scrollTo({
       left: clamped * window.innerWidth,
-      behavior: "smooth"
+      behavior
     });
   } else if (panels[clamped]) {
     const topOffset = panels[clamped].offsetTop - MOBILE_TOPBAR_H;
     window.scrollTo({
       top: Math.max(0, topOffset),
-      behavior: "smooth"
+      behavior
     });
   }
   updateUIState(clamped);
@@ -215,7 +228,8 @@ panels.forEach((panel) => observer.observe(panel));
 document.querySelectorAll("[data-nav]").forEach((trigger) => {
   trigger.addEventListener("click", (e) => {
     e.preventDefault();
-    goToPanel(Number(trigger.dataset.nav));
+    const targetIdx = Number(trigger.dataset.nav);
+    goToPanel(targetIdx);
   });
 });
 
@@ -276,9 +290,6 @@ const CATEGORY_LABELS = {
   "almacen-gastronomia": "Insumos de Almacén y Gastronomía"
 };
 
-/* Nota: category puede ser un texto ("harinas") o una lista (["harinas", "puratos"])
-   para que un mismo producto aparezca en más de un botón de filtro.
-   Los productos Puratos figuran en primer lugar. */
 const PRODUCTS = [
   {
     id: 5,
@@ -815,4 +826,17 @@ if (contactForm) {
 ensurePanelsVisible();
 setActiveCategory(activeCategory);
 saveAndRenderCart();
-updateUIState(0);
+
+const initialHash = window.location.hash.toLowerCase();
+if (Object.prototype.hasOwnProperty.call(SECTION_HASH_MAP, initialHash)) {
+  goToPanel(SECTION_HASH_MAP[initialHash], true);
+} else {
+  updateUIState(0);
+}
+
+window.addEventListener("hashchange", () => {
+  const updatedHash = window.location.hash.toLowerCase();
+  if (Object.prototype.hasOwnProperty.call(SECTION_HASH_MAP, updatedHash)) {
+    goToPanel(SECTION_HASH_MAP[updatedHash], false);
+  }
+});

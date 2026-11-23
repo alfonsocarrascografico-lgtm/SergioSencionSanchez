@@ -80,6 +80,34 @@
     </div>
   </header>
 
+  <!-- PANTALLA DE BIENVENIDA INICIAL -->
+  <section id="intro-gate" class="intro-gate" aria-label="Presentación">
+    <div
+      class="intro-bg"
+      style="background-image: url('Bodegón rústico de panes horneados.png');"
+      aria-hidden="true"
+    ></div>
+    <div class="intro-overlay" aria-hidden="true"></div>
+
+    <div class="intro-content">
+      <div class="intro-logo-plate">
+        <img
+          src="logo sergio 1.png"
+          alt="Sergio Sención Sánchez Distribuciones"
+          class="intro-logo"
+        />
+      </div>
+      <h2>Venta y distribución de insumos para panaderías y gastronomía</h2>
+      <p>
+        Representamos marcas líderes en panificación, pastelería y materias primas.
+        Abastecemos obradores, comercios y cocinas profesionales.
+      </p>
+      <div class="intro-actions">
+              <button type="button" id="enter-site-btn" class="btn intro-btn-ghost">Ingresar al sitio</button>
+      </div>
+    </div>
+  </section>
+
   <!-- MENÚ DESPLEGABLE PARA MÓVILES -->
   <nav id="mobile-drawer" class="mobile-drawer" aria-label="Navegación móvil" aria-hidden="true">
     <a href="#inicio" class="mobile-link active" data-nav="0">Inicio</a>
@@ -359,5 +387,25 @@
   </aside>
 
   <script src="app.js"></script>
+  <script>
+    (function () {
+      const introGate = document.getElementById("intro-gate");
+      const enterBtn = document.getElementById("enter-site-btn");
+      if (!introGate) return;
+
+      const closeIntro = () => {
+        introGate.classList.add("is-hidden");
+        introGate.setAttribute("aria-hidden", "true");
+      };
+
+      if (enterBtn) {
+        enterBtn.addEventListener("click", closeIntro);
+      }
+
+      document.querySelectorAll("[data-nav]").forEach((el) => {
+        el.addEventListener("click", closeIntro);
+      });
+    })();
+  </script>
 </body>
 </html>

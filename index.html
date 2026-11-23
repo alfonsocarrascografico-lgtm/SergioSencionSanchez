@@ -103,7 +103,7 @@
         Abastecemos obradores, comercios y cocinas profesionales.
       </p>
       <div class="intro-actions">
-              <button type="button" id="enter-site-btn" class="btn intro-btn-ghost">Ingresar al sitio</button>
+        <button type="button" id="enter-site-btn" class="btn intro-btn-ghost">Ingresar al sitio</button>
       </div>
     </div>
   </section>
@@ -387,25 +387,5 @@
   </aside>
 
   <script src="app.js"></script>
-  <script>
-    (function () {
-      const introGate = document.getElementById("intro-gate");
-      const enterBtn = document.getElementById("enter-site-btn");
-      if (!introGate) return;
-
-      const closeIntro = () => {
-        introGate.classList.add("is-hidden");
-        introGate.setAttribute("aria-hidden", "true");
-      };
-
-      if (enterBtn) {
-        enterBtn.addEventListener("click", closeIntro);
-      }
-
-      document.querySelectorAll("[data-nav]").forEach((el) => {
-        el.addEventListener("click", closeIntro);
-      });
-    })();
-  </script>
 </body>
 </html>

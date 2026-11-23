@@ -116,6 +116,12 @@ body {
   background: var(--bg-orange-tint);
 }
 
+.cart-icon {
+  display: none;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 .badge {
   background: var(--brand-red);
   color: #ffffff;
@@ -636,6 +642,7 @@ h2 {
   border-radius: 8px;
   border: 1px solid transparent;
   font-weight: 700;
+  text-decoration: none;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.15s ease;
 }
@@ -1023,6 +1030,11 @@ h2 {
     display: none;
   }
 
+  .cart-icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
   .menu-toggle {
     display: inline-flex;
   }
@@ -1090,14 +1102,24 @@ h2 {
 
   .filter-bar {
     width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    scrollbar-width: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    overflow-x: visible;
+    padding-bottom: 0;
   }
 
-  .filter-bar::-webkit-scrollbar {
-    display: none;
+  .filter-pill {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.25;
+  }
+
+  .filter-pill:first-child {
+    grid-column: 1 / -1;
   }
 
   .tech-modal-body {

@@ -22,6 +22,18 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .cart-icon {
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+    @media (max-width: 860px) {
+      .cart-icon {
+        display: inline-flex;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -44,6 +56,7 @@
 
     <div class="topbar-actions">
       <button type="button" id="open-cart-btn" class="cart-btn" aria-label="Abrir carrito">
+        <span class="cart-icon" aria-hidden="true">🛒</span>
         <span class="cart-label">Carrito</span>
         <span id="cart-count" class="badge">0</span>
       </button>

@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tienda — Sergio Sención Sánchez Distribuciones</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .cart-icon {
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+    @media (max-width: 860px) {
+      .cart-icon {
+        display: inline-flex;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -28,6 +41,7 @@
       <a href="index.html#tienda" class="btn btn-outline" style="padding: 7px 12px; font-size: 0.85rem;">← Volver</a>
 
       <button type="button" id="open-cart-btn" class="cart-btn" aria-label="Abrir carrito">
+        <span class="cart-icon" aria-hidden="true">🛒</span>
         <span class="cart-label">Carrito</span>
         <span id="cart-count" class="badge">0</span>
       </button>

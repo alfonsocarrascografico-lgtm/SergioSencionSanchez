@@ -93,19 +93,18 @@ body {
   align-items: center;
   justify-content: center;
   max-width: 100%;
-  background: rgba(255, 255, 255, 0.96);
-  padding: 14px 24px;
-  border-radius: 14px;
+  background: transparent;
+  padding: 0;
   margin-bottom: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
 }
 
 .intro-logo {
   display: block;
-  height: clamp(64px, 11vw, 96px);
+  height: clamp(72px, 12vw, 108px);
   width: auto;
-  max-width: min(72vw, 340px);
+  max-width: min(84vw, 380px);
   object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
 }
 
 .intro-kicker {
@@ -1171,14 +1170,14 @@ h2 {
   }
 
   .intro-logo-plate {
-    padding: 10px 16px;
-    border-radius: 12px;
+    padding: 0;
+    background: transparent;
     margin-bottom: 14px;
   }
 
   .intro-logo {
-    height: 58px;
-    max-width: 68vw;
+    height: 82px;
+    max-width: 82vw;
   }
 
   .intro-content h2 {

@@ -45,8 +45,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 24px;
-  overflow: hidden;
+  padding: 24px 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: #1a1410;
   transition: opacity 0.35s ease, visibility 0.35s ease;
 }
@@ -79,9 +80,32 @@ body {
 .intro-content {
   position: relative;
   z-index: 2;
+  width: 100%;
   max-width: 780px;
+  min-width: 0;
+  padding: 0 4px;
   text-align: center;
   color: #ffffff;
+}
+
+.intro-logo-plate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 14px 24px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+.intro-logo {
+  display: block;
+  height: clamp(64px, 11vw, 96px);
+  width: auto;
+  max-width: min(72vw, 340px);
+  object-fit: contain;
 }
 
 .intro-kicker {
@@ -97,21 +121,26 @@ body {
 }
 
 .intro-content h2 {
-  margin: 0 0 16px;
-  font-size: clamp(1.85rem, 3.6vw, 3rem);
-  line-height: 1.12;
+  margin: 0 0 14px;
+  font-size: clamp(1.45rem, 3.4vw, 2.85rem);
+  line-height: 1.15;
   text-transform: none;
   letter-spacing: -0.015em;
   color: #ffffff;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 
 .intro-content p {
-  margin: 0 auto 28px;
+  margin: 0 auto 24px;
+  width: 100%;
   max-width: 58ch;
-  font-size: clamp(1rem, 1.35vw, 1.14rem);
-  line-height: 1.6;
+  font-size: clamp(0.95rem, 1.35vw, 1.14rem);
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.92);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .intro-actions {
@@ -1137,8 +1166,34 @@ h2 {
     display: inline-flex;
   }
 
+  .intro-gate {
+    padding: 20px 16px;
+  }
+
+  .intro-logo-plate {
+    padding: 10px 16px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+  }
+
+  .intro-logo {
+    height: 58px;
+    max-width: 68vw;
+  }
+
+  .intro-content h2 {
+    font-size: 1.4rem;
+    line-height: 1.2;
+  }
+
+  .intro-content p {
+    font-size: 0.94rem;
+    margin-bottom: 20px;
+  }
+
   .intro-actions {
     flex-direction: column;
+    width: 100%;
   }
 
   .intro-actions .btn {

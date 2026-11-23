@@ -10,6 +10,7 @@ const mobileDrawer = document.getElementById("mobile-drawer");
 const cartDrawer = document.getElementById("cart-drawer");
 const techModal = document.getElementById("tech-modal");
 const backdrop = document.getElementById("backdrop");
+const splashGate = document.getElementById("splash-gate");
 
 const MOBILE_BREAKPOINT = 860;
 const MOBILE_TOPBAR_H = 66;
@@ -17,6 +18,23 @@ const WHATSAPP_NUMBER = "59899703667";
 let currentIndex = 0;
 let wheelLock = false;
 let activeTechProductId = null;
+
+if (splashGate) {
+  const enterSite = () => {
+    splashGate.classList.add("is-hidden");
+    setTimeout(() => {
+      splashGate.remove();
+    }, 350);
+  };
+
+  splashGate.addEventListener("click", enterSite);
+  splashGate.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      enterSite();
+    }
+  });
+}
 
 const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;
 
@@ -259,8 +277,114 @@ const CATEGORY_LABELS = {
 };
 
 /* Nota: category puede ser un texto ("harinas") o una lista (["harinas", "puratos"])
-   para que un mismo producto aparezca en más de un botón de filtro. */
+   para que un mismo producto aparezca en más de un botón de filtro.
+   Los productos Puratos figuran en primer lugar. */
 const PRODUCTS = [
+  {
+    id: 5,
+    name: "Easy Prepizza",
+    unit: "Bolsa 10 kg",
+    category: ["puratos", "harinas"],
+    price: 1380,
+    image: "easypizza.webp",
+    techSheet: {
+      tipo: "Premezcla completa para prepizzas y focaccias",
+      presentacion: "Bolsa de 10 kg",
+      aplicaciones: "Prepizzas al molde, a la piedra, pizzetas y focaccias.",
+      rendimiento: "Estandariza tiempos de fermentación y evita errores de dosificación.",
+      conservacion: "Conservar bien cerrada en lugar fresco y seco."
+    }
+  },
+  {
+    id: 6,
+    name: "Easy Salvado",
+    unit: "Bolsa 5 kg",
+    category: ["puratos", "harinas"],
+    price: 980,
+    image: "easysalvado.webp",
+    techSheet: {
+      tipo: "Premezcla para panificados con salvado",
+      presentacion: "Bolsa de 5 kg",
+      aplicaciones: "Panes integrales, figazas con fibra, tostadas y sándwiches.",
+      rendimiento: "Aporte equilibrado de fibra con miga húmeda y tierna.",
+      conservacion: "Lugar fresco y seco, lejos de fuentes de calor."
+    }
+  },
+  {
+    id: 7,
+    name: "Easy Pan Blanco tipo Artesanal",
+    unit: "Bolsa 10 kg",
+    category: ["puratos", "harinas"],
+    price: 1420,
+    image: "easypanblanco.webp",
+    techSheet: {
+      tipo: "Premezcla para pan blanco rústico / artesanal",
+      presentacion: "Bolsa de 10 kg",
+      aplicaciones: "Hogazas rústicas, baguettes, ciabattas y panes de corteza crocante.",
+      rendimiento: "Alveolado abierto, aroma tradicional y buena conservación.",
+      conservacion: "Lugar fresco, seco y ventilado."
+    }
+  },
+  {
+    id: 8,
+    name: "Easy Multicereal Plus",
+    unit: "Bolsa 5 kg",
+    category: ["puratos", "harinas"],
+    price: 1190,
+    image: "easymulticereal.webp",
+    techSheet: {
+      tipo: "Premezcla con mix de semillas y cereales",
+      presentacion: "Bolsa de 5 kg",
+      aplicaciones: "Panes multicereal, barras con semillas, pan de molde integral y grisines.",
+      rendimiento: "Distribución homogénea de semillas y excelente volumen.",
+      conservacion: "Mantener en envase cerrado en lugar fresco y seco."
+    }
+  },
+  {
+    id: 9,
+    name: "Harina de Almendras",
+    unit: "Bolsa 1 kg",
+    category: ["puratos", "harinas", "pasteleria"],
+    price: 1490,
+    image: "harinadealmendras.webp",
+    techSheet: {
+      tipo: "Almendra repelada finamente molida",
+      presentacion: "Bolsa de 1 kg",
+      aplicaciones: "Macarons, financiers, frangipane, alfajores y pastelería sin harina de trigo.",
+      rendimiento: "Granulometría fina que evita grumos en batidos delicados.",
+      conservacion: "Lugar fresco, oscuro y seco (idealmente refrigerado tras abrir)."
+    }
+  },
+  {
+    id: 10,
+    name: "Patis´omalt",
+    unit: "Balde 4 kg",
+    category: ["puratos", "pasteleria"],
+    price: 1220,
+    image: "patisomalt.webp",
+    techSheet: {
+      tipo: "Sustituto de azúcar para piezas artísticas y caramelo",
+      presentacion: "Balde de 4 kg",
+      aplicaciones: "Decoraciones de azúcar estirado/soplado, vitrales, pirulines y confitería.",
+      rendimiento: "Alta transparencia, baja higroscopicidad y resistencia a la humedad.",
+      conservacion: "Mantener el balde herméticamente cerrado en ambiente seco."
+    }
+  },
+  {
+    id: 11,
+    name: "Praliné de avellanas",
+    unit: "Balde 5 kg",
+    category: ["puratos", "pasteleria"],
+    price: 1540,
+    image: "pralinedeavellanas.webp",
+    techSheet: {
+      tipo: "Pasta praliné de avellanas tostadas caramelizadas",
+      presentacion: "Balde de 5 kg",
+      aplicaciones: "Rellenos de bombonería, mousses, cremas pasteleras, heladería y tortas.",
+      rendimiento: "Sabor intenso a avellana tostada y textura lista para incorporar.",
+      conservacion: "Lugar fresco y seco (15 °C a 20 °C), bien tapado."
+    }
+  },
   {
     id: 1,
     name: "Molino Dolores Fideera",
@@ -319,111 +443,6 @@ const PRODUCTS = [
       aplicaciones: "Panes de molde, viena, hamburguesa, masas enriquecidas y fermentaciones largas.",
       rendimiento: "Mayor tolerancia al amasado y excelente retención de gas.",
       conservacion: "Lugar fresco, seco y alejado de olores fuertes."
-    }
-  },
-  {
-    id: 5,
-    name: "Easy Prepizza",
-    unit: "Bolsa 10 kg",
-    category: ["harinas", "puratos"],
-    price: 1380,
-    image: "easypizza.webp",
-    techSheet: {
-      tipo: "Premezcla completa para prepizzas y focaccias",
-      presentacion: "Bolsa de 10 kg",
-      aplicaciones: "Prepizzas al molde, a la piedra, pizzetas y focaccias.",
-      rendimiento: "Estandariza tiempos de fermentación y evita errores de dosificación.",
-      conservacion: "Conservar bien cerrada en lugar fresco y seco."
-    }
-  },
-  {
-    id: 6,
-    name: "Easy Salvado",
-    unit: "Bolsa 5 kg",
-    category: ["harinas", "puratos"],
-    price: 980,
-    image: "easysalvado.webp",
-    techSheet: {
-      tipo: "Premezcla para panificados con salvado",
-      presentacion: "Bolsa de 5 kg",
-      aplicaciones: "Panes integrales, figazas con fibra, tostadas y sándwiches.",
-      rendimiento: "Aporte equilibrado de fibra con miga húmeda y tierna.",
-      conservacion: "Lugar fresco y seco, lejos de fuentes de calor."
-    }
-  },
-  {
-    id: 7,
-    name: "Easy Pan Blanco tipo Artesanal",
-    unit: "Bolsa 10 kg",
-    category: ["harinas", "puratos"],
-    price: 1420,
-    image: "easypanblanco.webp",
-    techSheet: {
-      tipo: "Premezcla para pan blanco rústico / artesanal",
-      presentacion: "Bolsa de 10 kg",
-      aplicaciones: "Hogazas rústicas, baguettes, ciabattas y panes de corteza crocante.",
-      rendimiento: "Alveolado abierto, aroma tradicional y buena conservación.",
-      conservacion: "Lugar fresco, seco y ventilado."
-    }
-  },
-  {
-    id: 8,
-    name: "Easy Multicereal Plus",
-    unit: "Bolsa 5 kg",
-    category: ["harinas", "puratos"],
-    price: 1190,
-    image: "easymulticereal.webp",
-    techSheet: {
-      tipo: "Premezcla con mix de semillas y cereales",
-      presentacion: "Bolsa de 5 kg",
-      aplicaciones: "Panes multicereal, barras con semillas, pan de molde integral y grisines.",
-      rendimiento: "Distribución homogénea de semillas y excelente volumen.",
-      conservacion: "Mantener en envase cerrado en lugar fresco y seco."
-    }
-  },
-  {
-    id: 9,
-    name: "Harina de Almendras",
-    unit: "Bolsa 1 kg",
-    category: ["puratos", "harinas", "pasteleria"],
-    price: 1490,
-    image: "harinadealmendras.webp",
-    techSheet: {
-      tipo: "Almendra repelada finamente molida",
-      presentacion: "Bolsa de 1 kg",
-      aplicaciones: "Macarons, financiers, frangipane, alfajores y pastelería sin harina de trigo.",
-      rendimiento: "Granulometría fina que evita grumos en batidos delicados.",
-      conservacion: "Lugar fresco, oscuro y seco (idealmente refrigerado tras abrir)."
-    }
-  },
-  {
-    id: 10,
-    name: "Patis´omalt",
-    unit: "Balde 4 kg",
-    category: ["pasteleria", "puratos"],
-    price: 1220,
-    image: "patisomalt.webp",
-    techSheet: {
-      tipo: "Sustituto de azúcar para piezas artísticas y caramelo",
-      presentacion: "Balde de 4 kg",
-      aplicaciones: "Decoraciones de azúcar estirado/soplado, vitrales, pirulines y confitería.",
-      rendimiento: "Alta transparencia, baja higroscopicidad y resistencia a la humedad.",
-      conservacion: "Mantener el balde herméticamente cerrado en ambiente seco."
-    }
-  },
-  {
-    id: 11,
-    name: "Praliné de avellanas",
-    unit: "Balde 5 kg",
-    category: ["pasteleria", "puratos"],
-    price: 1540,
-    image: "pralinedeavellanas.webp",
-    techSheet: {
-      tipo: "Pasta praliné de avellanas tostadas caramelizadas",
-      presentacion: "Balde de 5 kg",
-      aplicaciones: "Rellenos de bombonería, mousses, cremas pasteleras, heladería y tortas.",
-      rendimiento: "Sabor intenso a avellana tostada y textura lista para incorporar.",
-      conservacion: "Lugar fresco y seco (15 °C a 20 °C), bien tapado."
     }
   },
   {

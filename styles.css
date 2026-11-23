@@ -34,6 +34,104 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Pantalla de bienvenida inicial (debajo del topbar) */
+.intro-gate {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  overflow: hidden;
+  background: #1a1410;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.intro-gate.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-bg {
+  position: absolute;
+  inset: -16px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(7px);
+  transform: scale(1.04);
+}
+
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(22, 16, 12, 0.56) 0%,
+    rgba(22, 16, 12, 0.68) 100%
+  );
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.intro-kicker {
+  display: inline-block;
+  margin-bottom: 14px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--brand-gold);
+  border-bottom: 2px solid var(--brand-gold);
+  padding-bottom: 4px;
+}
+
+.intro-content h2 {
+  margin: 0 0 16px;
+  font-size: clamp(1.85rem, 3.6vw, 3rem);
+  line-height: 1.12;
+  text-transform: none;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+}
+
+.intro-content p {
+  margin: 0 auto 28px;
+  max-width: 58ch;
+  font-size: clamp(1rem, 1.35vw, 1.14rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.intro-btn-ghost {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.65);
+  color: #ffffff;
+  backdrop-filter: blur(4px);
+}
+
+.intro-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
 /* Barra superior fija */
 .topbar {
   position: fixed;
@@ -1037,6 +1135,14 @@ h2 {
 
   .menu-toggle {
     display: inline-flex;
+  }
+
+  .intro-actions {
+    flex-direction: column;
+  }
+
+  .intro-actions .btn {
+    width: 100%;
   }
 
   .stage {

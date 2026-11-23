@@ -531,7 +531,8 @@ function openTechSheet(id) {
     techModalTitleEl.textContent = product.name;
   }
   if (techModalPriceEl) {
-    techModalPriceEl.textContent = formatUYU(product.price);
+    techModalPriceEl.textContent = "";
+    techModalPriceEl.hidden = true;
   }
 
   if (techModalSpecsEl) {
@@ -594,7 +595,6 @@ function renderProducts() {
           <h3>${p.name}</h3>
         </div>
         <div>
-          <div class="product-price">${formatUYU(p.price)}</div>
           <button type="button" class="btn btn-primary btn-full" data-add="${p.id}">
             Agregar
           </button>
